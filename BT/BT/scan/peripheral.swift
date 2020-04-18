@@ -9,10 +9,12 @@
 import Foundation
 import CoreBluetooth
 
+extension UUID : Comparable {
+    public static func <(_ l : UUID,_ r : UUID) -> Bool { l.uuidString < r.uuidString }
+}
 
 
-
-public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence {
+public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable {
     public typealias Element = CBUUID
     public typealias Iterator = Array<Element>.Iterator
     
@@ -86,36 +88,36 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence {
     // delegate methods
     
     public func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
-        print("Peripheral \(identifier) : local name updated: \(localName ?? "")")
+        SysLog.DebugLog.debug("Peripheral \(identifier) : local name updated: \(localName ?? "")")
         delegate?.updatedName()
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
         if let e=error {
-            print("Peripheral \(identifier) : get RSSI error \(e)")
+            SysLog.DebugLog.error("Peripheral \(identifier) : get RSSI error \(e)")
             return
         }
         rssi=RSSI.doubleValue
-        print("Peripheral \(identifier) : RSSI: \(rssi)")
+        SysLog.DebugLog.debug("Peripheral \(identifier) : RSSI: \(rssi)")
         delegate?.readRSSI(rssi: rssi)
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         if let e=error {
-            print("Peripheral \(identifier) : discover services error \(e)")
+            SysLog.DebugLog.error("Peripheral \(identifier) : discover services error \(e)")
             return
         }
         if let s=peripheral.services {
-            print("Peripheral \(identifier) [\(localName ?? "nil")]")
-            print(">> Found services:")
-            s.forEach { print("    \($0)") }
+            SysLog.DebugLog.debug("Peripheral \(identifier) [\(localName ?? "nil")]")
+            SysLog.DebugLog.debug(">> Found services:")
+            s.forEach { SysLog.DebugLog.debug("    \($0)") }
             servicesFound()
         }
     }
     
     
     public func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
-        print("Peripheral \(identifier) : Invalidated \(invalidatedServices)")
+        SysLog.DebugLog.error("Peripheral \(identifier) : Invalidated \(invalidatedServices)")
         device.discoverServices(nil)
     }
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Error?) {
@@ -124,16 +126,16 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence {
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         if let e=error {
-            print("Peripheral \(identifier) : discover charactertstics error \(e)")
+            SysLog.DebugLog.error("Peripheral \(identifier) : discover characteristics error \(e)")
             return
         }
         self[service]?.discovered()
     }
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if let e=error {
-            print("Peripheral \(identifier), characteristic \(characteristic.uuid) : discover characteristic value error \(e)")
+            SysLog.DebugLog.error("Peripheral \(identifier), characteristic \(characteristic.uuid) : discover characteristic value error \(e)")
             let ns=e as NSError
-            print("NSError \(ns)")
+            SysLog.DebugLog.error("NSError \(ns)")
             
             return
         }
@@ -144,7 +146,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence {
     }
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?) {
         if let e=error {
-            print("Peripheral \(identifier) : discover descriptors error \(e)")
+            SysLog.DebugLog.error("Peripheral \(identifier) : discover descriptors error \(e)")
             return
         }
         
@@ -152,25 +154,25 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence {
     }
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor descriptor: CBDescriptor, error: Error?) {
         if let e=error {
-            print("Peripheral \(identifier) : discover descriptor value error \(e)")
+            SysLog.DebugLog.error("Peripheral \(identifier) : discover descriptor value error \(e)")
             return
         }
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         if let e=error {
-            print("Peripheral \(identifier) : update notifications error \(e)")
+            SysLog.DebugLog.error("Peripheral \(identifier) : update notifications error \(e)")
             return
         }
-        print("Peripheral \(identifier) Updated notification state for \(characteristic.uuid)")
+        SysLog.DebugLog.debug("Peripheral \(identifier) Updated notification state for \(characteristic.uuid)")
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         if let e=error {
-            print("Peripheral \(identifier) : write error \(e)")
+            SysLog.DebugLog.error("Peripheral \(identifier) : write error \(e)")
             return
         }
-        print("Peripheral \(identifier) wrote data to \(characteristic.uuid)")
+        SysLog.DebugLog.debug("Peripheral \(identifier) wrote data to \(characteristic.uuid)")
     }
     
     
@@ -183,6 +185,8 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence {
         return lines.joined(separator: "\n")
     }
     
+    public static func ==(_ l : BTPeripheral,_ r : BTPeripheral) -> Bool { l.identifier==r.identifier }
+    public static func <(_ l : BTPeripheral,_ r : BTPeripheral) -> Bool { l.identifier<r.identifier }
     
 
 }

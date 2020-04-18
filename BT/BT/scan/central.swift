@@ -12,7 +12,10 @@ import CoreBluetooth
 
 
 
-public class BTCentral : NSObject, CBCentralManagerDelegate {
+public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
+    
+    public typealias Element = BTPeripheral
+    public typealias Iterator = Array<Element>.Iterator
     
     private static var _central : BTCentral!
     public static var shared : BTCentral {
@@ -33,11 +36,11 @@ public class BTCentral : NSObject, CBCentralManagerDelegate {
     public private(set) var state : CBManagerState
     public var alive : Bool { return state == .poweredOn }
     private var ble : BLE = .Unknown
-    private var peripherals : [UUID:BTPeripheral]
+    private var peripherals : OrderedDictionary<UUID,BTPeripheral>
     
     public override init() {
         state = .unknown
-        peripherals = [:]
+        peripherals = OrderedDictionary<UUID,BTPeripheral>()
         super.init()
         central = CBCentralManager(delegate: self, queue: nil)
     }
@@ -49,10 +52,11 @@ public class BTCentral : NSObject, CBCentralManagerDelegate {
         }
     }
     public subscript(_ p : CBPeripheral) -> BTPeripheral? { return self.peripherals[p.identifier] }
-    
+    public var count : Int { return peripherals.count }
+    public func makeIterator() -> Iterator { self.peripherals.values.makeIterator() }
    
     public func scan(services : [CBUUID]? = nil) {
-        print("******** trying to scan with \(services?.description ?? "nil")")
+        SysLog.DebugLog.info("******** trying to scan with \(services?.description ?? "nil")")
         if(!central.isScanning) {
             central.scanForPeripherals(withServices: services, options: nil)
         }
@@ -76,7 +80,7 @@ public class BTCentral : NSObject, CBCentralManagerDelegate {
         switch state {
         case .poweredOn:
             //semaphore?.signal()
-            print("Powered on")
+            SysLog.DebugLog.info("Powered on")
             DispatchQueue.global(qos: .background).async {
                 //self.scan()
             }
@@ -84,27 +88,27 @@ public class BTCentral : NSObject, CBCentralManagerDelegate {
             DispatchQueue.global(qos: .background).async {
                 self.stopScan()
             }
-            peripherals=[:]
-            print("Powered off")
+            peripherals.removeAll()
+            SysLog.DebugLog.info("Powered off")
         case .resetting:
-            print("Resetting")
+            SysLog.DebugLog.info("Resetting")
         case .unknown:
-            print("Unknown state")
+            SysLog.DebugLog.info("Unknown state")
         case .unsupported:
             ble = .Unavailable
-            print("BLE unavailable")
+            SysLog.DebugLog.info("BLE unavailable")
         case .unauthorized:
             switch central.authorization {
             case .restricted:
-                print("Bluetooth is restricted on this device")
+                SysLog.DebugLog.error("Bluetooth is restricted on this device")
             case .denied:
-                print("The application is not authorized to use the Bluetooth Low Energy role")
+                SysLog.DebugLog.error("The application is not authorized to use the Bluetooth Low Energy role")
             default:
-                print("Something went wrong. Cleaning up cbManager")
+                SysLog.DebugLog.fault("Something went wrong. Cleaning up cbManager")
             }
             ble = .Illegal
         default:
-            print("Error state \(central.state)")
+            SysLog.DebugLog.error("Error state \(central.state)")
             
         }
         delegate?.changedState()

@@ -11,8 +11,11 @@ import CoreBluetooth
 
 public class BTSystemManager : BTCentralDelegate {
     
+    private static let queue = DispatchQueue(label: "BTEnumerateQueue", qos: .background)
+    
     private var managers : [BTPeripheralManager] = []
     public private(set) var services : [CBUUID]? = nil
+    public var delegate : BTPeripheralManagerDelegate?
     
     public init(services : [CBUUID]? = nil) {
         self.services=services
@@ -25,18 +28,27 @@ public class BTSystemManager : BTCentralDelegate {
         BTCentral.shared.delegate=self
     }
     
+    public func startScan() {
+        BTSystemManager.queue.async { BTCentral.shared.scan() }
+    }
+    public func stopScan() {
+        BTSystemManager.queue.async { BTCentral.shared.stopScan() }
+    }
+    
     
     public func configured(service: BTService) {
-        print("Have configured servce \(service)")
+        SysLog.DebugLog.debug("Have configured service \(service)")
+        //delegate?.update(peripheral: service.peripheral)
     }
     
     
     
     public func discovered(device: BTPeripheral, new: Bool) {
-        print("Discovered peripheral (is new: \(new)):")
-        print(device)
+        SysLog.DebugLog.info("Discovered peripheral (is new: \(new)):")
+        SysLog.DebugLog.info(device.description)
         if new {
             let mgr = BTPeripheralManager(device,services)
+            mgr.delegate=delegate
             mgr.run()
             managers.append(mgr)
         }
@@ -45,7 +57,7 @@ public class BTSystemManager : BTCentralDelegate {
     }
     
     public func changedState() {
-        print("Central manager has changed state: \(BTCentral.shared.state)")
+        SysLog.DebugLog.debug("Central manager has changed state: \(BTCentral.shared.state)")
         if BTCentral.shared.alive {
             BTCentral.shared.scan(services: services)
         }

@@ -124,8 +124,8 @@ public class BTCharacteristic : CustomStringConvertible {
         if readable && !bad {
             peripheral.readValue(for: characteristic)
         }
-        print(">>>> Characteristic \(self.identifier) on \(self.service) has")
-        print(self)
+        SysLog.DebugLog.debug(">>>> Characteristic \(self.identifier) on \(self.service) has")
+        SysLog.DebugLog.debug(self)
     }
     
     public func write(_ data : Data,mode : CBCharacteristicWriteType = .withResponse) {
@@ -138,15 +138,7 @@ public class BTCharacteristic : CustomStringConvertible {
     public func notify(_ on : Bool) {
         peripheral.setNotifyValue(on, for: characteristic)
     }
-    /*
-    public func discovered() {
-        guard let v=self.characteristic.value else { return }
-        self.queue.push(v)
-        print(">>>> Characteristic \(self.identifier) on \(self.service) has discovered value")
-        print(self)
-        self.delegate?.receivedValue(v)
-    }
-    */
+    
     public var bytes : Data? {
         return self.characteristic.value
     }

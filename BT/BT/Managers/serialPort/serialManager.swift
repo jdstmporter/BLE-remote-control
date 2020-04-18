@@ -41,7 +41,7 @@ public class BLESerialDevices<PORT : BLESerialPort> : Sequence {
     public var count : Int { return devices.count }
     public var ids : [UUID] { return devices.map { $0.device.identifier }}
     public subscript(_ id : UUID) -> BLESerialPort? { return devices.first {  $0.device.identifier == id } }
-    public func makeIterator() -> Array<BLESerialDevices.Element>.Iterator {
+    public func makeIterator() -> Array<Element>.Iterator {
         return devices.makeIterator()
     }
     
@@ -50,8 +50,8 @@ public class BLESerialDevices<PORT : BLESerialPort> : Sequence {
         guard let raw = info["service"] else { throw NError.NoServiceKey }
         guard let service = raw as? BTService else { throw NError.NotAService }
         
-        print("****** FOUND SERVICE ")
-        print(service)
+        SysLog.DebugLog.debug("****** FOUND SERVICE ")
+        SysLog.DebugLog.debug("\(service)")
         
         guard let serial = PORT(service, uuid: self.characteristic) else { throw NError.NotASerialPort }
         self.devices.append(serial)
@@ -66,7 +66,7 @@ public class BLESerialDevices<PORT : BLESerialPort> : Sequence {
             do {
                 try self.process(notification)
             }
-            catch let e { print("Error : \(e)") }
+            catch let e { SysLog.DebugLog.error("Error : \(e)") }
         }
         scanner = BTSystemManager(services: [service])
     }

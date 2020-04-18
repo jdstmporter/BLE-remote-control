@@ -9,7 +9,19 @@
 import Foundation
 import CoreBluetooth
 
+public protocol BTPeripheralManagerDelegate {
+    func create(peripheral: BTPeripheral)
+    func remove(peripheral: BTPeripheral)
+    func update(peripheral: BTPeripheral)
+}
+
 public class BTPeripheralManager : BTPeripheralDelegate {
+    
+    
+ 
+    
+
+    
     internal enum State {
         case Disconnected
         case Connecting
@@ -21,7 +33,7 @@ public class BTPeripheralManager : BTPeripheralDelegate {
     private var state : State
     private var match : [CBUUID]? = nil
     private var services : [BTService] = []
-    
+    public var delegate : BTPeripheralManagerDelegate?
     
     public init(_ device: BTPeripheral,_ match : [CBUUID]? = nil) {
         self.device=device
@@ -48,6 +60,8 @@ public class BTPeripheralManager : BTPeripheralDelegate {
         state=next
     }
     
+    
+    
     private func tellAllCharacteristics(action: (BTCharacteristic) -> ()) {
         device.forEach { serviceID in
             let service = device[serviceID]
@@ -58,36 +72,41 @@ public class BTPeripheralManager : BTPeripheralDelegate {
     
     public func connected() {
         state = .Connected
-        print("\(device.identifier) connected")
+        SysLog.DebugLog.debug("\(device.identifier) connected")
         tellAllCharacteristics(action: { $0.delegate?.didConnect() } )
+        delegate?.create(peripheral: device)
         run()
     }
     
     public func disconnected() {
-        print("\(device.identifier) disconnected")
+        SysLog.DebugLog.debug("\(device.identifier) disconnected")
         tellAllCharacteristics(action: { $0.delegate?.didDisconnect() } )
         state = .Disconnected
+        delegate?.remove(peripheral: device)
         run()
     }
     
     public func failedToConnect() {
-        print("\(device.identifier) failed to connect")
+        SysLog.DebugLog.error("\(device.identifier) failed to connect")
     }
     
     public func updatedName() {
-        print("\(device.identifier) updated name")
-        print(device)
+        SysLog.DebugLog.debug("\(device.identifier) updated name")
+        SysLog.DebugLog.debug(device)
+        delegate?.update(peripheral: device)
     }
     
     public func readRSSI(rssi: Double) {
-        print("\(device.identifier) read RSSI = \(rssi)")
+        SysLog.DebugLog.debug("\(device.identifier) read RSSI = \(rssi)")
+        delegate?.update(peripheral: device)
     }
     
     public func discoveredServices() {
         let keys = device.serviceIDs.filter { match?.contains($0) ?? true }
         self.services = keys.compactMap { device[$0] }
         state = .Ready
-        print("\(device.identifier) has discovered services matching \(match?.description ?? "<ALL>")")
+        SysLog.DebugLog.debug("\(device.identifier) has discovered services matching \(match?.description ?? "<ALL>")")
+        delegate?.update(peripheral: device)
         self.services.forEach { BTServiceManager($0).run() }
         
     }

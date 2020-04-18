@@ -38,6 +38,11 @@
 		E164553423F5C40600ADAAA6 /* serialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164553223F5C40200ADAAA6 /* serialManager.swift */; };
 		E164553623F7466C00ADAAA6 /* message.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164553523F7466C00ADAAA6 /* message.swift */; };
 		E164553723F7466C00ADAAA6 /* message.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164553523F7466C00ADAAA6 /* message.swift */; };
+		E1D3B1E32448B9A8003D91EC /* EnumeratorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1E22448B9A8003D91EC /* EnumeratorController.swift */; };
+		E1D3B1E52449207A003D91EC /* SortedDict.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1E42449207A003D91EC /* SortedDict.swift */; };
+		E1D3B1E7244A543A003D91EC /* PeripheralRow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D3B1E6244A543A003D91EC /* PeripheralRow.xib */; };
+		E1D3B1E9244A5561003D91EC /* PeripheralRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1E8244A5561003D91EC /* PeripheralRow.swift */; };
+		E1D3B1EB244BB24E003D91EC /* logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1EA244BB24E003D91EC /* logging.swift */; };
 		E1E2F6DF23ECB3A900DF4E20 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6DE23ECB3A900DF4E20 /* main.swift */; };
 		E1E2F6E723ECB3C400DF4E20 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */; };
 		E1E2F6EA23ECB3EC00DF4E20 /* central.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6E923ECB3EC00DF4E20 /* central.swift */; };
@@ -77,6 +82,11 @@
 		E164552B23F3730F00ADAAA6 /* serviceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = serviceDelegate.swift; sourceTree = "<group>"; };
 		E164553223F5C40200ADAAA6 /* serialManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = serialManager.swift; sourceTree = "<group>"; };
 		E164553523F7466C00ADAAA6 /* message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = message.swift; sourceTree = "<group>"; };
+		E1D3B1E22448B9A8003D91EC /* EnumeratorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumeratorController.swift; sourceTree = "<group>"; };
+		E1D3B1E42449207A003D91EC /* SortedDict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedDict.swift; sourceTree = "<group>"; };
+		E1D3B1E6244A543A003D91EC /* PeripheralRow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PeripheralRow.xib; sourceTree = "<group>"; };
+		E1D3B1E8244A5561003D91EC /* PeripheralRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralRow.swift; sourceTree = "<group>"; };
+		E1D3B1EA244BB24E003D91EC /* logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logging.swift; sourceTree = "<group>"; };
 		E1E2F6DB23ECB3A900DF4E20 /* BT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BT; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1E2F6DE23ECB3A900DF4E20 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -111,6 +121,11 @@
 				E12270EF23ECDD59005492C8 /* MainMenu.xib */,
 				E12270F223ECDD59005492C8 /* Info.plist */,
 				E12270F323ECDD59005492C8 /* BTApp.entitlements */,
+				E1D3B1E22448B9A8003D91EC /* EnumeratorController.swift */,
+				E1D3B1E42449207A003D91EC /* SortedDict.swift */,
+				E1D3B1E6244A543A003D91EC /* PeripheralRow.xib */,
+				E1D3B1E8244A5561003D91EC /* PeripheralRow.swift */,
+				E1D3B1EA244BB24E003D91EC /* logging.swift */,
 			);
 			path = BTApp;
 			sourceTree = "<group>";
@@ -278,6 +293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E12270EE23ECDD59005492C8 /* Assets.xcassets in Resources */,
+				E1D3B1E7244A543A003D91EC /* PeripheralRow.xib in Resources */,
 				E12270F123ECDD59005492C8 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -289,14 +305,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1D3B1E52449207A003D91EC /* SortedDict.swift in Sources */,
 				E12270EC23ECDD57005492C8 /* AppDelegate.swift in Sources */,
 				E164551223EDF93700ADAAA6 /* service.swift in Sources */,
+				E1D3B1E9244A5561003D91EC /* PeripheralRow.swift in Sources */,
 				E164552E23F3733C00ADAAA6 /* peripheralDelegate.swift in Sources */,
 				E164553723F7466C00ADAAA6 /* message.swift in Sources */,
+				E1D3B1E32448B9A8003D91EC /* EnumeratorController.swift in Sources */,
 				E164551E23F0BAC900ADAAA6 /* delegates.swift in Sources */,
 				E164551F23F0BACD00ADAAA6 /* extensions.swift in Sources */,
 				E164553423F5C40600ADAAA6 /* serialManager.swift in Sources */,
 				E164552323F0BC0C00ADAAA6 /* system.swift in Sources */,
+				E1D3B1EB244BB24E003D91EC /* logging.swift in Sources */,
 				E164551623EF343E00ADAAA6 /* characteristic.swift in Sources */,
 				E164553023F3734200ADAAA6 /* serial.swift in Sources */,
 				E12270F823ECDD7E005492C8 /* central.swift in Sources */,

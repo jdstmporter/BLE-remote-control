@@ -35,6 +35,63 @@ struct ListDict<Key,Value> where Key : Hashable {
     
 }
 
+public class OrderedDictionary<K,V> : Sequence where K : Hashable {
+    
+    public typealias Element = (key: K,value : V)
+    public typealias Iterator = Array<Element>.Iterator
+    public typealias Keys = Array<K>
+    public typealias Values = Array<V>
+    
+    public private(set) var keys : Keys
+    private var dict : [K:V]
+    
+    public init() {
+        keys=[]
+        dict=[:]
+    }
+    
+    private func make(_ key : K?) -> Element? {
+        guard let k = key, let value=dict[k] else { return nil }
+        return Element(key: k, value: value)
+    }
+    
+    public var count : Int { keys.count }
+   
+    public var isEmpty : Bool { count==0 }
+    
+    public subscript( _ key : K) -> V? {
+        get { self.dict[key] }
+        set {
+            guard let value = newValue else { return }
+            if !keys.contains(key) { keys.append(key) }
+            dict[key] = value
+        }
+    }
+    
+    public __consuming func makeIterator() -> OrderedDictionary<K, V>.Iterator {
+        self.asArray.makeIterator()
+    }
+    public var values : Values { self.map { $0.value } }
+    public var asArray : [Element] { self.keys.compactMap { make($0) } }
+    
+    public func removeAll() {
+        keys=[]
+        dict.removeAll()
+    }
+    public func removeValue(forKey key : K) {
+        guard keys.contains(key) else { return }
+        keys.removeAll { $0 == key }
+        dict.removeValue(forKey: key)
+    }
+    public func contains(_ key : K) -> Bool { keys.contains(key) }
+    
+}
+
+
+
+
+
+
 
 
 
