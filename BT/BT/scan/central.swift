@@ -56,7 +56,7 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
     public func makeIterator() -> Iterator { self.peripherals.values.makeIterator() }
    
     public func scan(services : [CBUUID]? = nil) {
-        SysLog.DebugLog.info("******** trying to scan with \(services?.description ?? "nil")")
+        SysLog.info("******** trying to scan with \(services?.description ?? "nil")")
         if(!central.isScanning) {
             central.scanForPeripherals(withServices: services, options: nil)
         }
@@ -80,7 +80,7 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
         switch state {
         case .poweredOn:
             //semaphore?.signal()
-            SysLog.DebugLog.info("Powered on")
+            SysLog.info("Powered on")
             DispatchQueue.global(qos: .background).async {
                 //self.scan()
             }
@@ -89,26 +89,26 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
                 self.stopScan()
             }
             peripherals.removeAll()
-            SysLog.DebugLog.info("Powered off")
+            SysLog.info("Powered off")
         case .resetting:
-            SysLog.DebugLog.info("Resetting")
+            SysLog.info("Resetting")
         case .unknown:
-            SysLog.DebugLog.info("Unknown state")
+            SysLog.info("Unknown state")
         case .unsupported:
             ble = .Unavailable
-            SysLog.DebugLog.info("BLE unavailable")
+            SysLog.info("BLE unavailable")
         case .unauthorized:
             switch central.authorization {
             case .restricted:
-                SysLog.DebugLog.error("Bluetooth is restricted on this device")
+                SysLog.error("Bluetooth is restricted on this device")
             case .denied:
-                SysLog.DebugLog.error("The application is not authorized to use the Bluetooth Low Energy role")
+                SysLog.error("The application is not authorized to use the Bluetooth Low Energy role")
             default:
-                SysLog.DebugLog.fault("Something went wrong. Cleaning up cbManager")
+                SysLog.fault("Something went wrong. Cleaning up cbManager")
             }
             ble = .Illegal
         default:
-            SysLog.DebugLog.error("Error state \(central.state)")
+            SysLog.error("Error state \(central.state)")
             
         }
         delegate?.changedState()

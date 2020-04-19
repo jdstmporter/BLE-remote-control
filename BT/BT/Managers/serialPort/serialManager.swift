@@ -50,8 +50,8 @@ public class BLESerialDevices<PORT : BLESerialPort> : Sequence {
         guard let raw = info["service"] else { throw NError.NoServiceKey }
         guard let service = raw as? BTService else { throw NError.NotAService }
         
-        SysLog.DebugLog.debug("****** FOUND SERVICE ")
-        SysLog.DebugLog.debug("\(service)")
+        SysLog.debug("****** FOUND SERVICE ")
+        SysLog.debug("\(service)")
         
         guard let serial = PORT(service, uuid: self.characteristic) else { throw NError.NotASerialPort }
         self.devices.append(serial)
@@ -66,7 +66,7 @@ public class BLESerialDevices<PORT : BLESerialPort> : Sequence {
             do {
                 try self.process(notification)
             }
-            catch let e { SysLog.DebugLog.error("Error : \(e)") }
+            catch let e { SysLog.error("Error : \(e)") }
         }
         scanner = BTSystemManager(services: [service])
     }

@@ -19,7 +19,7 @@ public class SortedSet<K> : Sequence where K : Comparable {
     }
     
     public func add(_ k : K) {
-        guard !items.contains(k) else { return }
+        guard items.contains(k) else { return }
         let idx = (items.firstIndex { $0 > k }) ?? items.endIndex
         items.insert(k, at: idx)
     }
@@ -34,6 +34,51 @@ public class SortedSet<K> : Sequence where K : Comparable {
     public var count : Int { items.count }
     public subscript(_ idx : Int) -> K { items[idx] }
     public func makeIterator() -> Iterator { items.makeIterator() }
+}
+
+public class SortableSet<K> : Sequence where K : Comparable, K : Hashable {
+    public typealias Element = K
+    public typealias Iterator = Array<Element>.Iterator
+    
+    private var items : [K] = []
+    private var _sorted : [K] = []
+    private var needsSorting : Bool = false
+    
+    public init() {}
+    public init<E>(_ items : E) where E : Sequence, E.Element == K {
+        self.items=Array(items)
+        self._sorted=items.sorted()
+    }
+    
+    public func add(_ k : K) {
+        if !items.contains(k) {
+            items.append(k)
+            needsSorting = true
+        }
+    }
+    public func contains(_ key: K) -> Bool { items.contains(key) }
+    public func removeValue(_ key : K) {
+        items=items.filter { $0 != key }
+        _sorted=_sorted.filter { $0 != key }
+    }
+    public func removeAll() {
+        items.removeAll()
+        _sorted=[]
+        needsSorting=false
+    }
+    
+    public var sorted : [Element] {
+        if needsSorting {
+            _sorted = items.sorted()
+            needsSorting = false
+            
+        }
+        return _sorted
+    }
+    
+    public var count : Int { items.count }
+    public subscript(_ idx : Int) -> K { sorted[idx] }
+    public func makeIterator() -> Iterator { sorted.makeIterator() }
 }
 
 public class SortedDictionary<K,V> : Sequence where K: Hashable, K: Comparable {

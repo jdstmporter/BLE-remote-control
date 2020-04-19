@@ -31,8 +31,9 @@ extension OSLogType : CaseIterable, Comparable, Hashable, CustomStringConvertibl
     public var description: String { OSLogType.names[self] ?? "-" }
 }
 
+@dynamicCallable
 @dynamicMemberLookup
-public class SysLog {
+public class _SysLog {
     public typealias Logger = (CustomStringConvertible) -> ()
     
     private var level : OSLogType
@@ -53,7 +54,9 @@ public class SysLog {
         guard let idx = OSLogType(n) else { return { _ in () } }
         return { self.log(idx,$0.description) }
     }
-    
-    public static let DebugLog = SysLog(.debug)
-    public static let Log = SysLog(.info)
+    public func dynamicallyCall(withArguments level: [OSLogType]) {
+        self.level=level.first ?? .default
+    }
 }
+
+public let SysLog = _SysLog()

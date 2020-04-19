@@ -70,7 +70,7 @@ public class BLEBaseSerial : BLESerialPort {
     
     
     public func receivedValue(_ d: Data) {
-        SysLog.DebugLog.info("Read : \(d)")
+        SysLog.info("Read : \(d)")
     }
     public func didConnect() {}
     public func didDisconnect() {}

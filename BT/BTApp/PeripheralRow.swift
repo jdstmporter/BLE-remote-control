@@ -17,8 +17,14 @@ class PeripheralRowView : NSTableRowView, NSTableViewDelegate, NSTableViewDataSo
     @IBOutlet weak var uuid: NSTextField!
     @IBOutlet weak var rssi: NSTextField!
     @IBOutlet weak var services: NSTableView!
+    @IBOutlet weak var favourite: NSButton!
+    
     
     public var peripheral : BTPeripheral? = nil { didSet { self.touch() } }
+    public var isFavourite : Bool {
+        get { favourite?.state == .on }
+        set { favourite?.state = newValue ? .on : .off }
+    }
     
     public func touch() {
         guard let p=self.peripheral else { return }
@@ -29,6 +35,10 @@ class PeripheralRowView : NSTableRowView, NSTableViewDelegate, NSTableViewDataSo
             self.services.reloadData()
         }
     }
+    
+    @IBAction func favouriteAction(_ sender: NSButton) {
+    }
+    
     
     public var count : Int { peripheral?.serviceIDs.count ?? 0 }
     

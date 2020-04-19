@@ -67,8 +67,8 @@ public class BTServiceManager : BTServiceDelegate {
     
     public func updatedCharacteristic(_ characteristic: BTCharacteristic) {
         guard let v=characteristic.bytes else { return }
-        SysLog.DebugLog.debug(">>>> Characteristic \(characteristic.identifier) on \(service.identifier) has discovered value")
-        SysLog.DebugLog.debug(characteristic)
+        SysLog.debug(">>>> Characteristic \(characteristic.identifier) on \(service.identifier) has discovered value")
+        SysLog.debug(characteristic)
         characteristic.delegate?.receivedValue(v)
     }
     

@@ -16,9 +16,11 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
     
     
 
+    @IBOutlet weak var systemStatus: NSImageView!
     @IBOutlet weak var table: NSTableView!
+    @IBOutlet weak var scanButton: NSButton!
     private var bt = BTSystemManager()
-    private var devs = SortedSet<BTPeripheral>()
+    private var devs = SortableSet<BTPeripheral>()
     
     override func viewDidLoad() {
         bt.delegate=self
@@ -27,16 +29,35 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
     }
     
     override func viewDidAppear() {
-        bt.startScan()
+        //bt.startScan()
     }
     override func viewWillDisappear() {
-        bt.stopScan()
+        //bt.stopScan()
     }
     
     
     @IBAction func onClick(_ sender: Any) {
     }
     
+    @IBAction func scanAction(_ sender: NSButton) {
+        switch sender.state {
+        case .on:
+            bt.startScan()
+        case .off:
+            bt.stopScan()
+        default:
+            break
+        }
+    }
+    
+    private func set(button b: Bool) {
+        DispatchQueue.main.async {
+            self.scanButton.isEnabled = b
+            self.scanButton.state = .off
+            let name = b ? NSImage.statusAvailableName : NSImage.statusUnavailableName
+            self.systemStatus.image=NSImage(imageLiteralResourceName: name)
+        }
+    }
     
     
     
@@ -54,6 +75,14 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         DispatchQueue.main.async { self.table.reloadData() }
     }
     
+    func systemStateChanged(alive: Bool) {
+        if alive { set(button: true) }
+        else {
+            bt.stopScan()
+            set(button: false)
+        }
+    }
+    
     // NSTableViewDataSource
     
     func numberOfRows(in tableView: NSTableView) -> Int { devs.count }
@@ -67,6 +96,7 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         var item = table.makeView(withIdentifier: EnumeratorController.id, owner: self) as? PeripheralRowView
         if item==nil { item = PeripheralRowView(frame: rowSize) }
         item?.peripheral=dev
+        item?.touch()
         return item
     }
     

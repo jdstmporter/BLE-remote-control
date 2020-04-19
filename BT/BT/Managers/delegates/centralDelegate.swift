@@ -29,7 +29,7 @@ public class BTSystemManager : BTCentralDelegate {
     }
     
     public func startScan() {
-        BTSystemManager.queue.async { BTCentral.shared.scan() }
+        BTSystemManager.queue.async { BTCentral.shared.scan(services: self.services) }
     }
     public func stopScan() {
         BTSystemManager.queue.async { BTCentral.shared.stopScan() }
@@ -37,15 +37,15 @@ public class BTSystemManager : BTCentralDelegate {
     
     
     public func configured(service: BTService) {
-        SysLog.DebugLog.debug("Have configured service \(service)")
+        SysLog.debug("Have configured service \(service)")
         //delegate?.update(peripheral: service.peripheral)
     }
     
     
     
     public func discovered(device: BTPeripheral, new: Bool) {
-        SysLog.DebugLog.info("Discovered peripheral (is new: \(new)):")
-        SysLog.DebugLog.info(device.description)
+        SysLog.info("Discovered peripheral (is new: \(new)):")
+        SysLog.info(device.description)
         if new {
             let mgr = BTPeripheralManager(device,services)
             mgr.delegate=delegate
@@ -57,10 +57,11 @@ public class BTSystemManager : BTCentralDelegate {
     }
     
     public func changedState() {
-        SysLog.DebugLog.debug("Central manager has changed state: \(BTCentral.shared.state)")
-        if BTCentral.shared.alive {
-            BTCentral.shared.scan(services: services)
-        }
+        SysLog.info("Central manager has changed state: \(BTCentral.shared.state)")
+        delegate?.systemStateChanged(alive: BTCentral.shared.alive)
+        //if BTCentral.shared.alive {
+        //    BTCentral.shared.scan(services: services)
+        //}
     }
     
     

@@ -44,8 +44,8 @@ public class BTService : Sequence {
         
         let c=service.characteristics ?? []
         if c.count>0 {
-            SysLog.DebugLog.debug(">> PERIPHERAL \(self.peripheral.identifier) - \(self.peripheral.localName ?? "-")")
-            SysLog.DebugLog.debug(">>>> Service \(self.identifier) has \(c.count) characteristics")
+            SysLog.debug(">> PERIPHERAL \(self.peripheral.identifier) - \(self.peripheral.localName ?? "-")")
+            SysLog.debug(">>>> Service \(self.identifier) has \(c.count) characteristics")
         }
     }
     

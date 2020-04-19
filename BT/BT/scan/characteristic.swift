@@ -124,8 +124,8 @@ public class BTCharacteristic : CustomStringConvertible {
         if readable && !bad {
             peripheral.readValue(for: characteristic)
         }
-        SysLog.DebugLog.debug(">>>> Characteristic \(self.identifier) on \(self.service) has")
-        SysLog.DebugLog.debug(self)
+        SysLog.debug(">>>> Characteristic \(self.identifier) on \(self.service) has")
+        SysLog.debug(self)
     }
     
     public func write(_ data : Data,mode : CBCharacteristicWriteType = .withResponse) {

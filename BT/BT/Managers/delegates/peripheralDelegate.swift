@@ -13,6 +13,8 @@ public protocol BTPeripheralManagerDelegate {
     func create(peripheral: BTPeripheral)
     func remove(peripheral: BTPeripheral)
     func update(peripheral: BTPeripheral)
+    
+    func systemStateChanged(alive: Bool)
 }
 
 public class BTPeripheralManager : BTPeripheralDelegate {
@@ -72,14 +74,14 @@ public class BTPeripheralManager : BTPeripheralDelegate {
     
     public func connected() {
         state = .Connected
-        SysLog.DebugLog.debug("\(device.identifier) connected")
+        SysLog.debug("\(device.identifier) connected")
         tellAllCharacteristics(action: { $0.delegate?.didConnect() } )
         delegate?.create(peripheral: device)
         run()
     }
     
     public func disconnected() {
-        SysLog.DebugLog.debug("\(device.identifier) disconnected")
+        SysLog.debug("\(device.identifier) disconnected")
         tellAllCharacteristics(action: { $0.delegate?.didDisconnect() } )
         state = .Disconnected
         delegate?.remove(peripheral: device)
@@ -87,17 +89,17 @@ public class BTPeripheralManager : BTPeripheralDelegate {
     }
     
     public func failedToConnect() {
-        SysLog.DebugLog.error("\(device.identifier) failed to connect")
+        SysLog.error("\(device.identifier) failed to connect")
     }
     
     public func updatedName() {
-        SysLog.DebugLog.debug("\(device.identifier) updated name")
-        SysLog.DebugLog.debug(device)
+        SysLog.debug("\(device.identifier) updated name")
+        SysLog.debug(device)
         delegate?.update(peripheral: device)
     }
     
     public func readRSSI(rssi: Double) {
-        SysLog.DebugLog.debug("\(device.identifier) read RSSI = \(rssi)")
+        SysLog.debug("\(device.identifier) read RSSI = \(rssi)")
         delegate?.update(peripheral: device)
     }
     
@@ -105,7 +107,7 @@ public class BTPeripheralManager : BTPeripheralDelegate {
         let keys = device.serviceIDs.filter { match?.contains($0) ?? true }
         self.services = keys.compactMap { device[$0] }
         state = .Ready
-        SysLog.DebugLog.debug("\(device.identifier) has discovered services matching \(match?.description ?? "<ALL>")")
+        SysLog.debug("\(device.identifier) has discovered services matching \(match?.description ?? "<ALL>")")
         delegate?.update(peripheral: device)
         self.services.forEach { BTServiceManager($0).run() }
         

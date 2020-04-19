@@ -88,36 +88,36 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     // delegate methods
     
     public func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
-        SysLog.DebugLog.debug("Peripheral \(identifier) : local name updated: \(localName ?? "")")
+        SysLog.debug("Peripheral \(identifier) : local name updated: \(localName ?? "")")
         delegate?.updatedName()
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
         if let e=error {
-            SysLog.DebugLog.error("Peripheral \(identifier) : get RSSI error \(e)")
+            SysLog.error("Peripheral \(identifier) : get RSSI error \(e)")
             return
         }
         rssi=RSSI.doubleValue
-        SysLog.DebugLog.debug("Peripheral \(identifier) : RSSI: \(rssi)")
+        SysLog.debug("Peripheral \(identifier) : RSSI: \(rssi)")
         delegate?.readRSSI(rssi: rssi)
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         if let e=error {
-            SysLog.DebugLog.error("Peripheral \(identifier) : discover services error \(e)")
+            SysLog.error("Peripheral \(identifier) : discover services error \(e)")
             return
         }
         if let s=peripheral.services {
-            SysLog.DebugLog.debug("Peripheral \(identifier) [\(localName ?? "nil")]")
-            SysLog.DebugLog.debug(">> Found services:")
-            s.forEach { SysLog.DebugLog.debug("    \($0)") }
+            SysLog.debug("Peripheral \(identifier) [\(localName ?? "nil")]")
+            SysLog.debug(">> Found services:")
+            s.forEach { SysLog.debug("    \($0)") }
             servicesFound()
         }
     }
     
     
     public func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
-        SysLog.DebugLog.error("Peripheral \(identifier) : Invalidated \(invalidatedServices)")
+        SysLog.error("Peripheral \(identifier) : Invalidated \(invalidatedServices)")
         device.discoverServices(nil)
     }
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Error?) {
@@ -126,16 +126,16 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         if let e=error {
-            SysLog.DebugLog.error("Peripheral \(identifier) : discover characteristics error \(e)")
+            SysLog.error("Peripheral \(identifier) : discover characteristics error \(e)")
             return
         }
         self[service]?.discovered()
     }
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if let e=error {
-            SysLog.DebugLog.error("Peripheral \(identifier), characteristic \(characteristic.uuid) : discover characteristic value error \(e)")
+            SysLog.error("Peripheral \(identifier), characteristic \(characteristic.uuid) : discover characteristic value error \(e)")
             let ns=e as NSError
-            SysLog.DebugLog.error("NSError \(ns)")
+            SysLog.error("NSError \(ns)")
             
             return
         }
@@ -146,7 +146,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     }
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?) {
         if let e=error {
-            SysLog.DebugLog.error("Peripheral \(identifier) : discover descriptors error \(e)")
+            SysLog.error("Peripheral \(identifier) : discover descriptors error \(e)")
             return
         }
         
@@ -154,25 +154,25 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     }
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor descriptor: CBDescriptor, error: Error?) {
         if let e=error {
-            SysLog.DebugLog.error("Peripheral \(identifier) : discover descriptor value error \(e)")
+            SysLog.error("Peripheral \(identifier) : discover descriptor value error \(e)")
             return
         }
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         if let e=error {
-            SysLog.DebugLog.error("Peripheral \(identifier) : update notifications error \(e)")
+            SysLog.error("Peripheral \(identifier) : update notifications error \(e)")
             return
         }
-        SysLog.DebugLog.debug("Peripheral \(identifier) Updated notification state for \(characteristic.uuid)")
+        SysLog.debug("Peripheral \(identifier) Updated notification state for \(characteristic.uuid)")
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         if let e=error {
-            SysLog.DebugLog.error("Peripheral \(identifier) : write error \(e)")
+            SysLog.error("Peripheral \(identifier) : write error \(e)")
             return
         }
-        SysLog.DebugLog.debug("Peripheral \(identifier) wrote data to \(characteristic.uuid)")
+        SysLog.debug("Peripheral \(identifier) wrote data to \(characteristic.uuid)")
     }
     
     

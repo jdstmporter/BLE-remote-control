@@ -13,9 +13,9 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <box verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" title="Peripheral Identifiers" translatesAutoresizingMaskIntoConstraints="NO" id="DAI-qM-jTZ">
-                    <rect key="frame" x="1" y="91" width="478" height="65"/>
+                    <rect key="frame" x="1" y="91" width="410" height="65"/>
                     <view key="contentView" id="tjA-2C-eXY">
-                        <rect key="frame" x="3" y="3" width="472" height="47"/>
+                        <rect key="frame" x="3" y="3" width="404" height="47"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VNf-TB-GyN">
@@ -53,7 +53,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vYF-Xe-uBT">
-                                <rect key="frame" x="132" y="4" width="336" height="24"/>
+                                <rect key="frame" x="132" y="4" width="268" height="24"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="UUID" drawsBackground="YES" id="ykH-Qw-IWV">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -196,25 +196,59 @@
                         </constraints>
                     </view>
                 </box>
+                <box title="Favourite" translatesAutoresizingMaskIntoConstraints="NO" id="bzD-we-OJ3">
+                    <rect key="frame" x="409" y="91" width="70" height="65"/>
+                    <view key="contentView" id="K8W-2S-Dl1">
+                        <rect key="frame" x="3" y="3" width="64" height="47"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Gby-gV-gOQ">
+                                <rect key="frame" x="18" y="10" width="28" height="28"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="24" id="JkF-gq-i5L"/>
+                                    <constraint firstAttribute="height" constant="24" id="Rqj-3I-fhX"/>
+                                </constraints>
+                                <buttonCell key="cell" type="check" title="Check" bezelStyle="regularSquare" imagePosition="only" refusesFirstResponder="YES" state="on" inset="2" id="WQP-SD-o2Z">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="favouriteAction:" target="c22-O7-iKe" id="vzw-0Y-0on"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Gby-gV-gOQ" firstAttribute="centerX" secondItem="K8W-2S-Dl1" secondAttribute="centerX" id="Miq-gL-gEy"/>
+                            <constraint firstItem="Gby-gV-gOQ" firstAttribute="centerY" secondItem="K8W-2S-Dl1" secondAttribute="centerY" id="ziM-Ma-UlJ"/>
+                        </constraints>
+                    </view>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="64" id="dWw-ub-3Yj"/>
+                    </constraints>
+                </box>
             </subviews>
             <constraints>
                 <constraint firstItem="JiR-ef-9DG" firstAttribute="leading" secondItem="HSJ-tU-IEl" secondAttribute="trailing" constant="4" id="28q-W2-yvb"/>
                 <constraint firstItem="HSJ-tU-IEl" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="4" id="55f-Ge-6aa"/>
                 <constraint firstAttribute="bottom" secondItem="JiR-ef-9DG" secondAttribute="bottom" constant="4" id="9T7-GS-Za3"/>
+                <constraint firstItem="bzD-we-OJ3" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="4" id="BrC-Cd-XMR"/>
                 <constraint firstAttribute="trailing" secondItem="JiR-ef-9DG" secondAttribute="trailing" constant="4" id="FkW-5d-n5X"/>
                 <constraint firstItem="DAI-qM-jTZ" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="4" id="TYg-dJ-V59"/>
                 <constraint firstItem="HSJ-tU-IEl" firstAttribute="top" secondItem="DAI-qM-jTZ" secondAttribute="bottom" constant="4" id="XtE-YL-CW5"/>
-                <constraint firstAttribute="trailing" secondItem="DAI-qM-jTZ" secondAttribute="trailing" constant="4" id="aZK-ER-ndO"/>
+                <constraint firstItem="bzD-we-OJ3" firstAttribute="leading" secondItem="DAI-qM-jTZ" secondAttribute="trailing" constant="4" id="chV-za-5Di"/>
+                <constraint firstItem="bzD-we-OJ3" firstAttribute="height" secondItem="DAI-qM-jTZ" secondAttribute="height" id="gZn-gE-CHQ"/>
                 <constraint firstItem="DAI-qM-jTZ" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="4" id="qS8-OD-s6E"/>
+                <constraint firstAttribute="trailing" secondItem="bzD-we-OJ3" secondAttribute="trailing" constant="4" id="ts4-We-Xdw"/>
                 <constraint firstItem="JiR-ef-9DG" firstAttribute="top" secondItem="DAI-qM-jTZ" secondAttribute="bottom" constant="4" id="zoE-Gd-ert"/>
             </constraints>
             <connections>
+                <outlet property="favourite" destination="Gby-gV-gOQ" id="GiJ-C7-wRt"/>
                 <outlet property="name" destination="VNf-TB-GyN" id="l4m-cI-emA"/>
                 <outlet property="rssi" destination="ZQm-kU-TNb" id="PuU-AF-9hU"/>
                 <outlet property="services" destination="3wR-aa-wPh" id="GF0-dn-SmY"/>
                 <outlet property="uuid" destination="vYF-Xe-uBT" id="lBv-iL-yhh"/>
             </connections>
-            <point key="canvasLocation" x="140" y="81.5"/>
+            <point key="canvasLocation" x="140" y="81"/>
         </customView>
     </objects>
 </document>

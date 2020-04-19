@@ -10,10 +10,10 @@ import Cocoa
 import CoreBluetooth
 
 public class Delegate : BLESerialDevicesDelegate {
-    @IBOutlet var controller: EnumeratorController!
+    
     
     public func discoveredSerialPort(_ s: BLESerialPort) {
-        SysLog.DebugLog.info("++++++ \(s)")
+        SysLog.info("++++++ \(s)")
         s.notify(true)
     }
 }
@@ -28,6 +28,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        SysLog(.info)
         //ser = BLESerialDevices(service: CBUUID(string: "FFE0"),characteristic: CBUUID(string: "FFE1"))
         //ser.delegate=Delegate()
         //ser.start()
