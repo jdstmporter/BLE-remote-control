@@ -43,6 +43,7 @@
 		E1D3B1E7244A543A003D91EC /* PeripheralRow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D3B1E6244A543A003D91EC /* PeripheralRow.xib */; };
 		E1D3B1E9244A5561003D91EC /* PeripheralRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1E8244A5561003D91EC /* PeripheralRow.swift */; };
 		E1D3B1EB244BB24E003D91EC /* logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1EA244BB24E003D91EC /* logging.swift */; };
+		E1D3B1EE244DE47F003D91EC /* storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1ED244DE47F003D91EC /* storage.swift */; };
 		E1E2F6DF23ECB3A900DF4E20 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6DE23ECB3A900DF4E20 /* main.swift */; };
 		E1E2F6E723ECB3C400DF4E20 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */; };
 		E1E2F6EA23ECB3EC00DF4E20 /* central.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6E923ECB3EC00DF4E20 /* central.swift */; };
@@ -87,6 +88,7 @@
 		E1D3B1E6244A543A003D91EC /* PeripheralRow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PeripheralRow.xib; sourceTree = "<group>"; };
 		E1D3B1E8244A5561003D91EC /* PeripheralRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralRow.swift; sourceTree = "<group>"; };
 		E1D3B1EA244BB24E003D91EC /* logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logging.swift; sourceTree = "<group>"; };
+		E1D3B1ED244DE47F003D91EC /* storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = storage.swift; sourceTree = "<group>"; };
 		E1E2F6DB23ECB3A900DF4E20 /* BT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BT; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1E2F6DE23ECB3A900DF4E20 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -116,6 +118,7 @@
 		E12270EA23ECDD57005492C8 /* BTApp */ = {
 			isa = PBXGroup;
 			children = (
+				E1D3B1EC244DE466003D91EC /* preferences */,
 				E12270EB23ECDD57005492C8 /* AppDelegate.swift */,
 				E12270ED23ECDD59005492C8 /* Assets.xcassets */,
 				E12270EF23ECDD59005492C8 /* MainMenu.xib */,
@@ -159,6 +162,14 @@
 				E164553223F5C40200ADAAA6 /* serialManager.swift */,
 			);
 			path = serialPort;
+			sourceTree = "<group>";
+		};
+		E1D3B1EC244DE466003D91EC /* preferences */ = {
+			isa = PBXGroup;
+			children = (
+				E1D3B1ED244DE47F003D91EC /* storage.swift */,
+			);
+			path = preferences;
 			sourceTree = "<group>";
 		};
 		E1E2F6D223ECB3A900DF4E20 = {
@@ -320,6 +331,7 @@
 				E164551623EF343E00ADAAA6 /* characteristic.swift in Sources */,
 				E164553023F3734200ADAAA6 /* serial.swift in Sources */,
 				E12270F823ECDD7E005492C8 /* central.swift in Sources */,
+				E1D3B1EE244DE47F003D91EC /* storage.swift in Sources */,
 				E164552D23F3733900ADAAA6 /* centralDelegate.swift in Sources */,
 				E164552F23F3733F00ADAAA6 /* serviceDelegate.swift in Sources */,
 				E164550D23EDD63A00ADAAA6 /* peripheral.swift in Sources */,
@@ -377,7 +389,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = solutions.jpembedded.BTApp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.porternet.ble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -397,7 +409,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = solutions.jpembedded.BTApp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.porternet.ble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
