@@ -29,7 +29,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         SysLog(.info)
-        UserDataManager.shared.start()
+        UserData.start()
         //ser = BLESerialDevices(service: CBUUID(string: "FFE0"),characteristic: CBUUID(string: "FFE1"))
         //ser.delegate=Delegate()
         //ser.start()
@@ -39,7 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
-        UserDataManager.shared.stop()
+        UserData.stop()
     }
 
 
