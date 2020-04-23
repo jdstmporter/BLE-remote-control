@@ -19,11 +19,12 @@ extension Array : KVType  where Element : KVType {}
 extension Dictionary : KVType where Key == String, Value : KVType {}
 
 
-public protocol UserDataManagerDelegate {
+public protocol UserDataListener {
     var id : UUID { get }
     func valuesChanged(keys : [String])
-    func valuesLoaded(keys: [String])
 }
+
+
 
 extension Dictionary {
     public func intersect(keys : [Key]) -> [Key:Value] {
@@ -32,20 +33,29 @@ extension Dictionary {
 }
 
 public class UserDataManager : Sequence  {
-    public typealias Element = Dictionary<String,Any>.Element
-    public typealias Iterator = Dictionary<String,Any>.Iterator
     
-    public static let UserDataManagerNotification = Notification.Name("__BT_USER_DATA_MANAGER_CHANGE")
+    private struct ListenerWrapper : Hashable {
+        public private(set) var listener : UserDataListener
+        
+        public init(_ listener: UserDataListener) { self.listener = listener }
+        
+        public func hash(into hasher: inout Hasher) { listener.id.hash(into: &hasher) }
+        static public func ==(_ l : ListenerWrapper,_ r : ListenerWrapper) -> Bool { l.listener.id==r.listener.id }
+    }
+    
+    public typealias DataDict = Dictionary<String,Any>
+    public typealias Element = DataDict.Element
+    public typealias Iterator = DataDict.Iterator
     
     private static var bundleID : String { Bundle.main.bundleIdentifier ?? "" }
     private static let teamID : String = "XLKATCU397"
-    
     private static var containerID : String { "icloud.\(teamID).\(bundleID)" }
     
     private var store : NSUbiquitousKeyValueStore { .default }
-    public private(set) var started : Bool = false
+    public var data : DataDict { store.dictionaryRepresentation }
     
-    private var data : [String:Any] = [:]
+    public private(set) var started : Bool = false
+    private var listeners = Set<ListenerWrapper>()
     
     public  init() {}
     
@@ -53,7 +63,6 @@ public class UserDataManager : Sequence  {
         guard !started else { return }
         NotificationCenter.default.addObserver(self, selector: #selector(callback(_:)), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: store)
         store.synchronize()
-        data=store.dictionaryRepresentation
         started=true
     }
     
@@ -63,7 +72,10 @@ public class UserDataManager : Sequence  {
         NotificationCenter.default.removeObserver(self, name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: store)
     }
     
-     
+    public func listen(_ listener : UserDataListener) { listeners.insert(ListenerWrapper(listener)) }
+    public func unlisten(_ listener : UserDataListener) { listeners.remove(ListenerWrapper(listener))}
+    public func unlisten() { listeners.removeAll() }
+    
     @objc func callback(_ event : NSNotification) {
         guard let dict = event.userInfo else { return }
         SysLog.debug("iCloud event : \(event)")
@@ -84,26 +96,17 @@ public class UserDataManager : Sequence  {
             }
         }
         if let keys = dict[NSUbiquitousKeyValueStoreChangedKeysKey] as? [NSString] {
-            data=store.dictionaryRepresentation
             let names = keys.map { $0 as String }
+            listeners.forEach { $0.listener.valuesChanged(keys: names) }
             SysLog.info("iCloud keys changed: \(names.joined(separator: ", "))")
-            NotificationCenter.default.post(name: UserDataManager.UserDataManagerNotification,
-                                            object: self,
-                                            userInfo: ["keys" : names])
         }
     }
     
     public subscript<T>(_ key : String) -> T?  {
         get { data[key] as? T }
         set {
-            if let nv = newValue {
-                data[key] = nv
-                store.set(nv, forKey: key)
-            }
-            else {
-                data.removeValue(forKey: key)
-                store.removeObject(forKey: key)
-            }
+            if let nv = newValue { store.set(nv, forKey: key) }
+            else { store.removeObject(forKey: key) }
         }
     }
     

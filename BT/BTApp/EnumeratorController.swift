@@ -8,10 +8,17 @@
 
 import Cocoa
 
+extension Array where Element : Equatable {
+    public mutating func remove(value: Element) {
+        self=self.filter { $0 != value }
+    }
+    public func contains(_ test : (Element) -> Bool) -> Bool {
+        nil != first(where : test)
+    }
+}
 
 
-
-class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewDataSource, BTPeripheralManagerDelegate {
+class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewDataSource, BTPeripheralManagerDelegate, UserDataListener, PeripheralRowViewDelegate {
     public static let id = NSUserInterfaceItemIdentifier(rawValue: "__Enumerator_row")
     
     
@@ -21,11 +28,23 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
     @IBOutlet weak var scanButton: NSButton!
     private var bt = BTSystemManager()
     private var devs = SortableSet<BTPeripheral>()
+    private var favourites : [UUID] = []
+    
+    public var id = UUID()
+    
+    private func loadFavourites() {
+        guard let raw : [String] = UserData["favourites"] else { return }
+        favourites = raw.compactMap { UUID(uuidString: $0) }
+    }
     
     override func viewDidLoad() {
         bt.delegate=self
         guard let nib = NSNib(nibNamed: NSNib.Name("PeripheralRow"),bundle: nil) else { return }
         table.register(nib, forIdentifier: EnumeratorController.id)
+        
+        loadFavourites()
+        UserData.listen(self)
+        
     }
     
     override func viewDidAppear() {
@@ -48,6 +67,26 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         default:
             break
         }
+    }
+    
+    public func valuesChanged(keys: [String]) {
+        guard keys.contains("favourites") else { return }
+        loadFavourites()
+        // reload the GUI
+    }
+    
+    public func favouriteChanged(device: UUID, value: Bool) {
+        // make sure that we have such a device, and that the 'new' value
+        // for its favourite status is a change from what is currently
+        // true (designed to avoid infinite recursion by pushing back
+        // to cloud when nothing has changed)
+        guard (devs.contains { $0.identifier == device }),
+            favourites.contains(device) != value
+            else { return }
+        
+        if value { favourites.append(device) }
+        else { favourites.remove(value: device) }
+        UserData["favourites"] = favourites.map { $0.uuidString }
     }
     
     private func set(button b: Bool) {
@@ -95,8 +134,9 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         guard let dev = self.tableView(table,objectValueFor: nil,row: row) as? BTPeripheral else { return nil }
         var item = table.makeView(withIdentifier: EnumeratorController.id, owner: self) as? PeripheralRowView
         if item==nil { item = PeripheralRowView(frame: rowSize) }
+        item?.delegate=self
         item?.peripheral=dev
-        item?.touch()
+        item?.touch(self.favourites.contains(dev.identifier))
         return item
     }
     

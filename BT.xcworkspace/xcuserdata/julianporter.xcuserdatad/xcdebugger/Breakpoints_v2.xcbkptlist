@@ -89,8 +89,8 @@
             filePath = "BT/BTApp/EnumeratorController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "45"
-            endingLineNumber = "45"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
             landmarkName = "scanAction(_:)"
             landmarkType = "7">
          </BreakpointContent>

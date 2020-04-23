@@ -9,6 +9,10 @@
 import Cocoa
 import CoreBluetooth
 
+protocol PeripheralRowViewDelegate {
+    func favouriteChanged(device: UUID,value: Bool)
+}
+
 class PeripheralRowView : NSTableRowView, NSTableViewDelegate, NSTableViewDataSource {
     
     public static let id = NSUserInterfaceItemIdentifier(rawValue: "__Enumerator_PeripheralRowView")
@@ -19,26 +23,25 @@ class PeripheralRowView : NSTableRowView, NSTableViewDelegate, NSTableViewDataSo
     @IBOutlet weak var services: NSTableView!
     @IBOutlet weak var favourite: NSButton!
     
-    
+    public var delegate : PeripheralRowViewDelegate? = nil
     public var peripheral : BTPeripheral? = nil { didSet { self.touch() } }
-    public var isFavourite : Bool {
-        get { favourite?.state == .on }
-        set { favourite?.state = newValue ? .on : .off }
-    }
+    public var isFavourite : Bool { favourite?.state == .on }
     
-    public func touch() {
+    public func touch(_ isFavourite : Bool = false) {
         guard let p=self.peripheral else { return }
         DispatchQueue.main.async {
             self.name?.stringValue = p.localName ?? ""
             self.uuid?.stringValue = p.identifier.uuidString
             self.rssi?.doubleValue = p.rssi
+            self.favourite?.state = isFavourite ? .on : .off
             self.services.reloadData()
         }
     }
     
     @IBAction func favouriteAction(_ sender: NSButton) {
+        guard let p=peripheral else { return }
+        delegate?.favouriteChanged(device: p.identifier, value: isFavourite)
     }
-    
     
     public var count : Int { peripheral?.serviceIDs.count ?? 0 }
     
