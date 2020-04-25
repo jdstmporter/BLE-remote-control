@@ -59,4 +59,10 @@ public class _SysLog {
     }
 }
 
-public let SysLog = _SysLog()
+#if LOG_DEBUG
+public let SysLog = _SysLog(.debug)
+#elseif LOG_INFO
+public let SysLog = _SysLog(.info)
+#else
+public let SysLog = _SysLog(.error)
+#endif

@@ -44,12 +44,22 @@
 		E1D3B1E9244A5561003D91EC /* PeripheralRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1E8244A5561003D91EC /* PeripheralRow.swift */; };
 		E1D3B1EB244BB24E003D91EC /* logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1EA244BB24E003D91EC /* logging.swift */; };
 		E1D3B1EE244DE47F003D91EC /* storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1ED244DE47F003D91EC /* storage.swift */; };
+		E1D3B1F62453372A003D91EC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1F52453372A003D91EC /* main.swift */; };
 		E1E2F6DF23ECB3A900DF4E20 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6DE23ECB3A900DF4E20 /* main.swift */; };
 		E1E2F6E723ECB3C400DF4E20 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */; };
 		E1E2F6EA23ECB3EC00DF4E20 /* central.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6E923ECB3EC00DF4E20 /* central.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		E1D3B1F12453372A003D91EC /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		E1E2F6D923ECB3A900DF4E20 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -89,6 +99,8 @@
 		E1D3B1E8244A5561003D91EC /* PeripheralRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralRow.swift; sourceTree = "<group>"; };
 		E1D3B1EA244BB24E003D91EC /* logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logging.swift; sourceTree = "<group>"; };
 		E1D3B1ED244DE47F003D91EC /* storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = storage.swift; sourceTree = "<group>"; };
+		E1D3B1F32453372A003D91EC /* BTTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BTTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1D3B1F52453372A003D91EC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E1E2F6DB23ECB3A900DF4E20 /* BT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BT; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1E2F6DE23ECB3A900DF4E20 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -101,6 +113,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E12270F723ECDD6C005492C8 /* CoreBluetooth.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E1D3B1F02453372A003D91EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,11 +191,20 @@
 			path = preferences;
 			sourceTree = "<group>";
 		};
+		E1D3B1F42453372A003D91EC /* BTTest */ = {
+			isa = PBXGroup;
+			children = (
+				E1D3B1F52453372A003D91EC /* main.swift */,
+			);
+			path = BTTest;
+			sourceTree = "<group>";
+		};
 		E1E2F6D223ECB3A900DF4E20 = {
 			isa = PBXGroup;
 			children = (
 				E1E2F6DD23ECB3A900DF4E20 /* BT */,
 				E12270EA23ECDD57005492C8 /* BTApp */,
+				E1D3B1F42453372A003D91EC /* BTTest */,
 				E1E2F6DC23ECB3A900DF4E20 /* Products */,
 				E1E2F6E523ECB3C400DF4E20 /* Frameworks */,
 			);
@@ -187,6 +215,7 @@
 			children = (
 				E1E2F6DB23ECB3A900DF4E20 /* BT */,
 				E12270E923ECDD57005492C8 /* BTApp.app */,
+				E1D3B1F32453372A003D91EC /* BTTest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -244,6 +273,23 @@
 			productReference = E12270E923ECDD57005492C8 /* BTApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E1D3B1F22453372A003D91EC /* BTTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E1D3B1F72453372A003D91EC /* Build configuration list for PBXNativeTarget "BTTest" */;
+			buildPhases = (
+				E1D3B1EF2453372A003D91EC /* Sources */,
+				E1D3B1F02453372A003D91EC /* Frameworks */,
+				E1D3B1F12453372A003D91EC /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BTTest;
+			productName = BTTest;
+			productReference = E1D3B1F32453372A003D91EC /* BTTest */;
+			productType = "com.apple.product-type.tool";
+		};
 		E1E2F6DA23ECB3A900DF4E20 /* BT */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E1E2F6E223ECB3A900DF4E20 /* Build configuration list for PBXNativeTarget "BT" */;
@@ -267,12 +313,15 @@
 		E1E2F6D323ECB3A900DF4E20 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1120;
-				LastUpgradeCheck = 1130;
+				LastSwiftUpdateCheck = 1140;
+				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = "JP Embedded Solutions";
 				TargetAttributes = {
 					E12270E823ECDD57005492C8 = {
 						CreatedOnToolsVersion = 11.2;
+					};
+					E1D3B1F22453372A003D91EC = {
+						CreatedOnToolsVersion = 11.4.1;
 					};
 					E1E2F6DA23ECB3A900DF4E20 = {
 						CreatedOnToolsVersion = 11.3.1;
@@ -294,6 +343,7 @@
 			targets = (
 				E1E2F6DA23ECB3A900DF4E20 /* BT */,
 				E12270E823ECDD57005492C8 /* BTApp */,
+				E1D3B1F22453372A003D91EC /* BTTest */,
 			);
 		};
 /* End PBXProject section */
@@ -335,6 +385,14 @@
 				E164552D23F3733900ADAAA6 /* centralDelegate.swift in Sources */,
 				E164552F23F3733F00ADAAA6 /* serviceDelegate.swift in Sources */,
 				E164550D23EDD63A00ADAAA6 /* peripheral.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E1D3B1EF2453372A003D91EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1D3B1F62453372A003D91EC /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,6 +438,29 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = BTApp/BTApp.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = XLKATCU397;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = BTApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.porternet.ble;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG LOG_INFO";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E12270F523ECDD59005492C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BTApp/BTApp.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = XLKATCU397;
@@ -393,23 +474,27 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
-			name = Debug;
+			name = Release;
 		};
-		E12270F523ECDD59005492C8 /* Release */ = {
+		E1D3B1F82453372A003D91EC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = BTApp/BTApp.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = XLKATCU397;
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = BTApp/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.porternet.ble;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E1D3B1F92453372A003D91EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XLKATCU397;
+				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -531,6 +616,7 @@
 		E1E2F6E323ECB3A900DF4E20 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XLKATCU397;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -543,6 +629,7 @@
 		E1E2F6E423ECB3A900DF4E20 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XLKATCU397;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -560,6 +647,15 @@
 			buildConfigurations = (
 				E12270F423ECDD59005492C8 /* Debug */,
 				E12270F523ECDD59005492C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E1D3B1F72453372A003D91EC /* Build configuration list for PBXNativeTarget "BTTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1D3B1F82453372A003D91EC /* Debug */,
+				E1D3B1F92453372A003D91EC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

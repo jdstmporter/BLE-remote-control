@@ -696,7 +696,7 @@
                             <rect key="frame" x="1" y="1" width="725" height="318"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="160" viewBased="YES" id="w7e-ni-kx5">
+                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="160" viewBased="YES" id="w7e-ni-kx5">
                                     <rect key="frame" x="0.0" y="0.0" width="725" height="318"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="4"/>
@@ -723,7 +723,7 @@
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UMq-fn-k3E">
                                                             <rect key="frame" x="0.0" y="0.0" width="722" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" id="esG-vF-i6F">
+                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" id="esG-vF-i6F">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -789,15 +789,18 @@
                                 </textField>
                                 <comboBox horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="236-WB-y6m">
                                     <rect key="frame" x="222" y="2" width="429" height="25"/>
-                                    <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" refusesFirstResponder="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="left" drawsBackground="YES" completes="NO" numberOfVisibleItems="2" id="ipz-Pq-71w">
+                                    <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="left" drawsBackground="YES" completes="NO" numberOfVisibleItems="2" id="ipz-Pq-71w">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         <objectValues>
-                                            <string>Favourites</string>
                                             <string>Any</string>
+                                            <string>Favourites</string>
                                         </objectValues>
                                     </comboBoxCell>
+                                    <connections>
+                                        <action selector="scanForChange:" target="b2k-Ob-vGe" id="zuI-FR-LBN"/>
+                                    </connections>
                                 </comboBox>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5LP-fw-yYg">
                                     <rect key="frame" x="161" y="7" width="59" height="16"/>
@@ -860,6 +863,7 @@
         <viewController id="b2k-Ob-vGe" customClass="EnumeratorController" customModule="BTApp" customModuleProvider="target">
             <connections>
                 <outlet property="scanButton" destination="yqn-Ma-4bR" id="ZnS-X7-1gT"/>
+                <outlet property="scanFor" destination="236-WB-y6m" id="XLL-LO-Xwd"/>
                 <outlet property="systemStatus" destination="eA4-YW-e1t" id="e3E-bf-JHI"/>
                 <outlet property="table" destination="w7e-ni-kx5" id="4Fv-BT-w1U"/>
                 <outlet property="view" destination="EiT-Mj-1SZ" id="53u-1n-eYT"/>

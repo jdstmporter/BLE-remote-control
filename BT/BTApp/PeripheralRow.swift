@@ -13,7 +13,7 @@ protocol PeripheralRowViewDelegate {
     func favouriteChanged(device: UUID,value: Bool)
 }
 
-class PeripheralRowView : NSTableRowView, NSTableViewDelegate, NSTableViewDataSource {
+class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataSource {
     
     public static let id = NSUserInterfaceItemIdentifier(rawValue: "__Enumerator_PeripheralRowView")
     
@@ -40,6 +40,7 @@ class PeripheralRowView : NSTableRowView, NSTableViewDelegate, NSTableViewDataSo
     
     @IBAction func favouriteAction(_ sender: NSButton) {
         guard let p=peripheral else { return }
+        SysLog.info("Clicked button: \(sender.state) is FAV \(isFavourite)")
         delegate?.favouriteChanged(device: p.identifier, value: isFavourite)
     }
     
@@ -66,10 +67,16 @@ class PeripheralRowView : NSTableRowView, NSTableViewDelegate, NSTableViewDataSo
         }
     }
     
-    override func drawBackground(in dirtyRect: NSRect) {
+    
+    override func  draw(_ dirtyRect: NSRect) {
         NSColor.black.setFill()
         dirtyRect.fill()
+        super.draw(dirtyRect)
     }
+    
+    override var acceptsFirstResponder: Bool { return true }
+    
+    
     
     
 }

@@ -208,7 +208,7 @@
                                     <constraint firstAttribute="width" constant="24" id="JkF-gq-i5L"/>
                                     <constraint firstAttribute="height" constant="24" id="Rqj-3I-fhX"/>
                                 </constraints>
-                                <buttonCell key="cell" type="check" title="Check" bezelStyle="regularSquare" imagePosition="only" refusesFirstResponder="YES" state="on" inset="2" id="WQP-SD-o2Z">
+                                <buttonCell key="cell" type="check" title="Check" bezelStyle="regularSquare" imagePosition="only" state="on" inset="2" id="WQP-SD-o2Z">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>

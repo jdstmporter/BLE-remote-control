@@ -74,7 +74,7 @@ public class BTPeripheralManager : BTPeripheralDelegate {
     
     public func connected() {
         state = .Connected
-        SysLog.debug("\(device.identifier) connected")
+        SysLog.info("\(device.identifier) connected")
         tellAllCharacteristics(action: { $0.delegate?.didConnect() } )
         delegate?.create(peripheral: device)
         run()
