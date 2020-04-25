@@ -53,7 +53,7 @@ public class BLESerialDevices<PORT : BLESerialPort> : Sequence {
         SysLog.debug("****** FOUND SERVICE ")
         SysLog.debug("\(service)")
         
-        guard let serial = PORT(service, uuid: self.characteristic) else { throw NError.NotASerialPort }
+        guard let serial = PORT(service, rxtx: self.characteristic) else { throw NError.NotASerialPort }
         self.devices.append(serial)
         self.delegate?.discoveredSerialPort(serial)
     }

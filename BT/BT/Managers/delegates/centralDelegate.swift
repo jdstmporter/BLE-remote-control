@@ -28,6 +28,8 @@ public class BTSystemManager : BTCentralDelegate {
         BTCentral.shared.delegate=self
     }
     
+    
+    
     public func startScan() {
         BTSystemManager.queue.async { BTCentral.shared.scan(services: self.services) }
     }

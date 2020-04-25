@@ -16,6 +16,7 @@ protocol PeripheralRowViewDelegate {
 class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataSource {
     
     public static let id = NSUserInterfaceItemIdentifier(rawValue: "__Enumerator_PeripheralRowView")
+    public static let sw = NSUserInterfaceItemIdentifier(rawValue: "__Enumerator_PeripheralRowViewSwitch")
     
     @IBOutlet weak var name: NSTextField!
     @IBOutlet weak var uuid: NSTextField!
@@ -49,23 +50,36 @@ class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataS
     public func numberOfRows(in tableView: NSTableView) -> Int { count }
     
     
-    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
-        guard 0 <= row, row<count else { return nil }
-        return peripheral?.serviceIDs[row]
-    }
+    
 
     public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        guard let id = self.tableView(tableView,objectValueFor: tableColumn, row: row) as? CBUUID else { return nil }
-        if let view = services.makeView(withIdentifier: PeripheralRowView.id, owner: self) as? NSTextField {
-            view.stringValue = id.description
-            return view
+        guard let col = tableColumn?.title, 0 <= row, row<count, let id = peripheral?.serviceIDs[row] else { return nil }
+        if col=="UUID" {
+            if let view = services.makeView(withIdentifier: PeripheralRowView.id, owner: self) as? NSTextField {
+                view.stringValue = id.description
+                return view
+            }
+            else {
+                let view = NSTextField.init(labelWithString: id.description)
+                view.identifier=PeripheralRowView.id
+                return view
+            }
         }
-        else {
-            let view = NSTextField.init(labelWithString: id.description)
-            view.identifier=PeripheralRowView.id
-            return view
+        else if col=="Template" {
+            if let view = services.makeView(withIdentifier: PeripheralRowView.sw, owner: self) as? OnOffView {
+                view.state = .on
+                return view
+            }
+            else {
+                let view = OnOffView(state: .on) 
+                view.identifier=PeripheralRowView.sw
+                return view
+            }
         }
+        else { return nil }
     }
+    
+    
     
     
     override func  draw(_ dirtyRect: NSRect) {
