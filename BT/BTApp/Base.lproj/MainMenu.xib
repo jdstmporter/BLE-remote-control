@@ -7,14 +7,14 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
             <connections>
-                <outlet property="controller" destination="b2k-Ob-vGe" id="aWL-qs-8ZW"/>
                 <outlet property="delegate" destination="Voe-Tx-rLC" id="GzC-gU-4Uq"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="BTApp" customModuleProvider="target">
             <connections>
+                <outlet property="controller" destination="b2k-Ob-vGe" id="m0g-IZ-fjo"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>

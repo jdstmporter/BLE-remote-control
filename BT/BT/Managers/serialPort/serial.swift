@@ -11,7 +11,7 @@
 import Foundation
 import CoreBluetooth
 
-public struct BLESerialTemplate {
+public struct BLESerialTemplate : Hashable, CustomStringConvertible {
     public private(set) var service : CBUUID
     public private(set) var rx : CBUUID
     public private(set) var tx : CBUUID
@@ -23,6 +23,10 @@ public struct BLESerialTemplate {
         self.tx=rxtx.1
         self.name=name
     }
+    init(service : CBUUID, rxtx : CBUUID, name : String = "") {
+        self.init(service: service, rxtx: (rxtx,rxtx), name: name)
+    }
+    
     
     init?(_ key : String, values : [String:Any]) {
         guard let s = values["service"] as? String,
@@ -41,16 +45,26 @@ public struct BLESerialTemplate {
         self.name = name ?? port.deviceName ?? ""
     }
     
+    
+    
     func implementedBy(_ p : BTPeripheral) -> Bool {
         BLEBaseSerial(peripheral: p, template: self) != nil
     }
     
     var serialised : [String:Any] {
-        [ "service" : service.uuidString,
-          "rx" : rx.uuidString,
-          "tx" : tx.uuidString
+        [ "service" : service.description,
+          "rx" : rx.description,
+          "tx" : tx.description
         ]
     }
+    
+    public var description: String {
+        serialised.map { "\($0.key)=\($0.value)" }.joined(separator: " ")
+    }
+    
+    public static func ^(_ l : BLESerialTemplate,_ r : CBUUID) -> Bool { l.service==r }
+    public static func ^(_ l : CBUUID,_ r : BLESerialTemplate) -> Bool { l==r.service }
+    
     
 }
 

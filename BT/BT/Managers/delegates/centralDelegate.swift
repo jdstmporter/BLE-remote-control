@@ -16,6 +16,7 @@ public class BTSystemManager : BTCentralDelegate {
     private var managers : [BTPeripheralManager] = []
     public private(set) var services : [CBUUID]? = nil
     public var delegate : BTPeripheralManagerDelegate?
+    public private(set) var scanning : Bool = false
     
     public init(services : [CBUUID]? = nil) {
         self.services=services
@@ -31,9 +32,11 @@ public class BTSystemManager : BTCentralDelegate {
     
     
     public func startScan() {
+        scanning=true
         BTSystemManager.queue.async { BTCentral.shared.scan(services: self.services) }
     }
     public func stopScan() {
+        scanning=false
         BTSystemManager.queue.async { BTCentral.shared.stopScan() }
     }
     

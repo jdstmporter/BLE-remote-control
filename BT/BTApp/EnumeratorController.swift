@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import CoreBluetooth
 
 extension Array where Element : Equatable {
     public mutating func remove(value: Element) {
@@ -81,14 +82,53 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         }
     }
     
+    private struct Status : OptionSet, Hashable, CaseIterable, CustomStringConvertible {
+        public typealias AllCases = [Status]
+        public typealias RawValue = Int
+        public var rawValue : Int
+        
+        
+        public static let BTEnabled = Status(rawValue: 1)
+        public static let ICloudEnabled = Status(rawValue: 2)
+        public static let Disabled : Status = []
+        public static let Ready : Status = [.BTEnabled, .ICloudEnabled]
+        
+        public static let allCases : AllCases = [.BTEnabled, .ICloudEnabled]
+        private static let names : [Status : String] = [
+            .BTEnabled : "BT",
+            .ICloudEnabled : "Cloud"
+        ]
+        
+        public init(rawValue : Int) { self.rawValue = rawValue }
+        
+        public var description: String {
+            Status.allCases.compactMap { self.contains($0) ? Status.names[$0] : nil }.joined(separator: " ")
+        }
+  
+    }
+    
 
     @IBOutlet weak var scanFor: NSComboBox!
     @IBOutlet weak var systemStatus: OnOffView!
     @IBOutlet weak var table: NSTableView!
     @IBOutlet weak var scanButton: NSButton!
     private var bt = BTSystemManager()
-    private var devs = SortableSet<BTPeripheral>()
+    private var devs = OrderedDictionary<UUID,BTPeripheral>()
     private var favourites : [UUID] = []
+    private var status : Status = .Disabled {
+        didSet {
+            guard status != oldValue else { return }
+            SysLog.info("Status changed - new value is \(status)")
+            let b = status.contains(.Ready)
+            DispatchQueue.main.async {
+                self.scanButton.isEnabled = b
+                self.scanButton.state = .off
+                self.systemStatus.state = b ? .on : .off
+            }
+        }
+    }
+    private var templates : [BLESerialTemplate] = []
+    
     
     
     public var id = UUID()
@@ -100,22 +140,34 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         SysLog.info("Loaded favourites: \(raw)")
     }
     
+    private func loadTemplates() {
+        templates.removeAll()
+        templates=[BLESerialTemplate(service: CBUUID(string:"FFE0"), rxtx: CBUUID(string:"FFE1"), name: "Ble-Nano")]
+    }
+    
     override func viewDidLoad() {
         bt.delegate=self
         guard let nib = NSNib(nibNamed: NSNib.Name("PeripheralRow"),bundle: nil) else { return }
         table.register(nib, forIdentifier: EnumeratorController.id)
-        loadFavourites()
-        UserData.listen(self)
         
         scanning = .All
         
     }
+
     
     override func viewDidAppear() {
         //bt.startScan()
     }
     override func viewWillDisappear() {
         //bt.stopScan()
+    }
+    
+    public func readyToScan() {
+        status.insert(.ICloudEnabled)
+        loadFavourites()
+        loadTemplates()
+        templates.forEach { SysLog.info("Loaded template \($0)") }
+        UserData.listen(self)
     }
     
     private var scanning : ScanForChoice {
@@ -155,8 +207,8 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         // for its favourite status is a change from what is currently
         // true (designed to avoid infinite recursion by pushing back
         // to cloud when nothing has changed)
-        SysLog.info("Contains: \(devs.contains { $0.identifier == device }) ALREADY: \(favourites.contains(device)) NEW: \(value)")
-        guard (devs.contains { $0.identifier == device }),
+        SysLog.info("Contains: \(devs.contains { $0.key == device }) ALREADY: \(favourites.contains(device)) NEW: \(value)")
+        guard (devs.contains { $0.key == device }),
             favourites.contains(device) != value
             else { return }
         
@@ -166,36 +218,38 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         SysLog.info("Favs are now: \(favourites.map { $0.uuidString })")
     }
     
-    private func set(button b: Bool) {
-        DispatchQueue.main.async {
-            self.scanButton.isEnabled = b
-            self.scanButton.state = .off
-            self.systemStatus.state = b ? .on : .off
-        }
-    }
+    
     
     
     
     func create(peripheral: BTPeripheral) {
-        SysLog.info("Adding \(peripheral)")
-        devs.add(peripheral)
+        guard bt.scanning else { return }
+        SysLog.info("**** Adding \(peripheral)")
+        peripheral.match(templates)
+        devs[peripheral.identifier]=peripheral
+        
+        SysLog.debug("Match is : \(peripheral.matchedTemplate?.description ?? "-")")
         DispatchQueue.main.async { self.table.reloadData() }
     }
     
     func remove(peripheral: BTPeripheral) {
-        devs.removeValue(peripheral)
+        guard bt.scanning else { return }
+        devs.removeValue(forKey: peripheral.identifier)
         DispatchQueue.main.async { self.table.reloadData() }
     }
     
     func update(peripheral: BTPeripheral) {
+        guard bt.scanning else { return }
         DispatchQueue.main.async { self.table.reloadData() }
     }
     
     func systemStateChanged(alive: Bool) {
-        if alive { set(button: true) }
+        if alive {
+            status.insert(.BTEnabled)
+        }
         else {
+            status.remove(.BTEnabled)
             bt.stopScan()
-            set(button: false)
         }
     }
     
@@ -204,7 +258,7 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
     func numberOfRows(in tableView: NSTableView) -> Int { devs.count }
     func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
         guard 0 <= row, row < devs.count else { return nil }
-        return devs[row]
+        return devs.at(row)
         
     }
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
@@ -213,7 +267,7 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         if item==nil { item = PeripheralRowView(frame: rowSize) }
         item?.delegate=self
         item?.peripheral=dev
-        item?.touch(self.favourites.contains(dev.identifier))
+        item?.touch(isFavourite: self.favourites.contains(dev.identifier))
         return item
     }
     

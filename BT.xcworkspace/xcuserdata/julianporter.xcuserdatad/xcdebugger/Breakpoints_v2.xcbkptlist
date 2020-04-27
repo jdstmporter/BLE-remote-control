@@ -25,8 +25,8 @@
             filePath = "BT/BT/Managers/delegates/centralDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "34"
-            endingLineNumber = "34"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
             landmarkName = "startScan()"
             landmarkType = "7">
             <Locations>
@@ -89,8 +89,8 @@
             filePath = "BT/BTApp/EnumeratorController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
+            startingLineNumber = "189"
+            endingLineNumber = "189"
             landmarkName = "scanAction(_:)"
             landmarkType = "7">
          </BreakpointContent>

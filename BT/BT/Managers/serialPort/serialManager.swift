@@ -74,7 +74,7 @@ public class BLESerialDevices<PORT : BLESerialPort> : Sequence {
     
 }
 
-struct BTUUID : Hashable, Equatable, CustomStringConvertible {
+public struct BTUUID : Hashable, Equatable, CustomStringConvertible {
     
     public private(set) var uuid : CBUUID
     
@@ -88,7 +88,7 @@ struct BTUUID : Hashable, Equatable, CustomStringConvertible {
         self.uuid=CBUUID.init(string: uuid)
     }
     
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         uuid.hash(into: &hasher)
     }
     

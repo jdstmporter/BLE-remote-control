@@ -73,6 +73,7 @@ public class BTPeripheralManager : BTPeripheralDelegate {
     
     
     public func connected() {
+        guard state != .Connected else { return }
         state = .Connected
         SysLog.info("\(device.identifier) connected")
         tellAllCharacteristics(action: { $0.delegate?.didConnect() } )

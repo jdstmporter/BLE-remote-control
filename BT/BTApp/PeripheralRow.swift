@@ -9,6 +9,30 @@
 import Cocoa
 import CoreBluetooth
 
+extension NSControl.StateValue {
+    public init(_ b : Bool?) {
+        if let bb = b { self = bb ? .on : .off }
+        else { self = .mixed }
+    }
+}
+
+infix operator =? : ComparisonPrecedence
+protocol NullEquatable where Self : Equatable {
+    static func =?(_ l : Self, _ r : Self?) -> Bool?
+    static func =?(_ l : Self?, _ r : Self) -> Bool?
+}
+extension NullEquatable {
+    public static func =?(_ l : Self, _ r : Self?) -> Bool? {
+        guard let rr=r else { return nil }
+        return l==rr
+    }
+    public static func =?(_ l : Self?, _ r : Self) -> Bool? {
+        guard let ll=l else { return nil }
+        return ll==r
+    }
+}
+extension CBUUID : NullEquatable {}
+
 protocol PeripheralRowViewDelegate {
     func favouriteChanged(device: UUID,value: Bool)
 }
@@ -24,19 +48,29 @@ class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataS
     @IBOutlet weak var services: NSTableView!
     @IBOutlet weak var favourite: NSButton!
     
+    private var matched : CBUUID?
     public var delegate : PeripheralRowViewDelegate? = nil
     public var peripheral : BTPeripheral? = nil { didSet { self.touch() } }
     public var isFavourite : Bool { favourite?.state == .on }
     
-    public func touch(_ isFavourite : Bool = false) {
+    public func touch(isFavourite : Bool = false) {
         guard let p=self.peripheral else { return }
+        self.matched = p.matchedTemplate?.service
         DispatchQueue.main.async {
             self.name?.stringValue = p.localName ?? ""
             self.uuid?.stringValue = p.identifier.uuidString
             self.rssi?.doubleValue = p.rssi
-            self.favourite?.state = isFavourite ? .on : .off
+            self.favourite?.state = NSControl.StateValue(isFavourite)
             self.services.reloadData()
         }
+    }
+    
+    public func wouldChange(_ pp : BTPeripheral) -> Bool {
+        guard let p = self.peripheral else { return true }
+        if p.localName != pp.localName { return true }
+        if p.identifier != pp.identifier { return true }
+        if p.rssi != pp.rssi { return true }
+        return false
     }
     
     @IBAction func favouriteAction(_ sender: NSButton) {
@@ -66,12 +100,13 @@ class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataS
             }
         }
         else if col=="Template" {
+            let st = NSControl.StateValue(id =? self.matched)
             if let view = services.makeView(withIdentifier: PeripheralRowView.sw, owner: self) as? OnOffView {
-                view.state = .on
+                view.state = st
                 return view
             }
             else {
-                let view = OnOffView(state: .on) 
+                let view = OnOffView(state: st)
                 view.identifier=PeripheralRowView.sw
                 return view
             }

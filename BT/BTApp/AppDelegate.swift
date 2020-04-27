@@ -22,14 +22,16 @@ public class Delegate : BLESerialDevicesDelegate {
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    @IBOutlet weak var controller: EnumeratorController!
     @IBOutlet weak var window: NSWindow!
     var ser : BLESerialDevices<BLEBaseSerial>!
-    
+        
     
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         SysLog(.info)
         UserData.start()
+        controller?.readyToScan()
         //ser = BLESerialDevices(service: CBUUID(string: "FFE0"),characteristic: CBUUID(string: "FFE1"))
         //ser.delegate=Delegate()
         //ser.start()

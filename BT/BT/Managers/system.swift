@@ -67,6 +67,7 @@ public class OrderedDictionary<K,V> : Sequence where K : Hashable {
             dict[key] = value
         }
     }
+    public func at(_ idx : Int) -> V? { dict[keys[idx]] }
     
     public __consuming func makeIterator() -> OrderedDictionary<K, V>.Iterator {
         self.asArray.makeIterator()

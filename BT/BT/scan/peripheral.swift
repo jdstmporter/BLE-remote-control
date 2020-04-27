@@ -28,8 +28,10 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     public private(set) var rssi : Double
     public private(set) var device : CBPeripheral
     private var services : [CBUUID:BTService]
-    public private(set) var uuids : [CBUUID]?
+    public private(set) var uuids : [CBUUID]
     private var ads : [String:Any]
+    
+    public private(set) var matchedTemplate : BLESerialTemplate?
     
     public init(_ device : CBPeripheral,advertisementData: [String: Any] = [:],rssi: Double) {
         self.device = device
@@ -37,7 +39,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         self.rssi = rssi
         self.services = [:]
         self.ads = advertisementData
-        self.uuids = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID]
+        self.uuids = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID] ?? []
         super.init()
         self.device.delegate = self
     }
@@ -52,13 +54,18 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         }
     }
     
-    public func hasAdUUID(_ uuid : CBUUID) -> Bool { return uuids?.contains(uuid) ?? false }
+    public func hasAdUUID(_ uuid : CBUUID) -> Bool { return uuids.contains(uuid) }
     public func hasServiceUUID(_ uuid : CBUUID) -> Bool { return services[uuid] != nil }
     
     public func scan(services : [CBUUID]? = nil) {
         device.discoverServices(services)
     }
     
+    @discardableResult public func match(_ templates : [BLESerialTemplate]) -> Bool {
+        matchedTemplate = templates.first { uuids.contains($0.service) }
+        return matchedTemplate != nil
+    }
+    public var isMatched : Bool { matchedTemplate != nil }
     
     
     private func servicesFound() {
@@ -76,6 +83,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     public var serviceIDs : [CBUUID] { return Array(self.services.keys) }
     
     public subscript(_ uuid: CBUUID) -> BTService? { return self.services[uuid] }
+    public subscript(_ uuid: BTUUID) -> BTService? { return self.services[uuid.uuid] }
     public subscript(_ service: CBService) -> BTService? { return self.services[service.uuid] }
     public subscript(_ ch: CBCharacteristic) -> BTService? { return self.services[ch.service.uuid] }
     
@@ -180,7 +188,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         var lines : [String]=[]
         lines.append(">> Device \(identifier) : \(localName ?? "-")")
         lines.append("  RSSI = \(rssi)")
-        lines.append("  UUIDS = \(uuids ?? [])")
+        lines.append("  UUIDS = \(uuids)")
         //ads.forEach { kv in lines.append("  \(kv.key) -> '\(kv.value)'") }
         return lines.joined(separator: "\n")
     }
