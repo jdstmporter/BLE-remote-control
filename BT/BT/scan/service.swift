@@ -33,6 +33,10 @@ public class BTService : Sequence {
         let a=Array(characteristics.values)
         return a.makeIterator()
     }
+    public var isMatched : Bool {
+        guard let uuid = peripheral.matchedTemplate?.service else { return false }
+        return uuid==identifier
+    }
     
     public func discovered() {
         self.characteristics.removeAll()
@@ -54,7 +58,8 @@ public class BTService : Sequence {
     }
     
     
-    public func discoverCharacteristics(_ uuids: [CBUUID]? = nil) {
+    public func discoverCharacteristics() {
+        let uuids = peripheral.matchedTemplate?.characteristics
         self.peripheral.device.discoverCharacteristics(uuids, for: self.service)
     }
     

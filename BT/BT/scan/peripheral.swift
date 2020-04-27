@@ -66,6 +66,10 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         return matchedTemplate != nil
     }
     public var isMatched : Bool { matchedTemplate != nil }
+    public var matchedService : BTService? {
+        guard let uuid = matchedTemplate?.service else { return nil }
+        return services[uuid]
+    }
     
     
     private func servicesFound() {

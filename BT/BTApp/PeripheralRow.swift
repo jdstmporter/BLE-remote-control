@@ -53,6 +53,7 @@ class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataS
     public var peripheral : BTPeripheral? = nil { didSet { self.touch() } }
     public var isFavourite : Bool { favourite?.state == .on }
     
+    
     public func touch(isFavourite : Bool = false) {
         guard let p=self.peripheral else { return }
         self.matched = p.matchedTemplate?.service

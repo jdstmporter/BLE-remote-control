@@ -28,13 +28,14 @@ public class BTPeripheralManager : BTPeripheralDelegate {
         case Disconnected
         case Connecting
         case Connected
-        case Scanning
+        case Characteristics
         case Ready
     }
     private var device : BTPeripheral
     private var state : State
     private var match : [CBUUID]? = nil
     private var services : [BTService] = []
+    private var managers : [BTServiceManager] = []
     public var delegate : BTPeripheralManagerDelegate?
     
     public init(_ device: BTPeripheral,_ match : [CBUUID]? = nil) {
@@ -53,7 +54,7 @@ public class BTPeripheralManager : BTPeripheralDelegate {
             next = .Connecting
         case .Connected:
             device.scan()
-            next = .Scanning
+            next = .Characteristics
         case .Ready:
             break
         default:
@@ -110,7 +111,11 @@ public class BTPeripheralManager : BTPeripheralDelegate {
         state = .Ready
         SysLog.debug("\(device.identifier) has discovered services matching \(match?.description ?? "<ALL>")")
         delegate?.update(peripheral: device)
-        self.services.forEach { BTServiceManager($0).run() }
+        self.managers = self.services.map { service in
+            let manager = BTServiceManager(service)
+            manager.run()
+            return manager
+        }
         
     }
     

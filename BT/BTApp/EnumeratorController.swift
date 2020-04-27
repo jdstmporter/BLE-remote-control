@@ -18,93 +18,55 @@ extension Array where Element : Equatable {
     }
 }
 
+fileprivate struct Status : OptionSet, Hashable, CaseIterable, CustomStringConvertible {
+      public typealias AllCases = [Status]
+      public typealias RawValue = Int
+      public var rawValue : Int
+      
+      
+      public static let BTEnabled = Status(rawValue: 1)
+      public static let ICloudEnabled = Status(rawValue: 2)
+      public static let Disabled : Status = []
+      public static let Ready : Status = [.BTEnabled, .ICloudEnabled]
+      
+      public static let allCases : AllCases = [.BTEnabled, .ICloudEnabled]
+      private static let names : [Status : String] = [
+          .BTEnabled : "BT",
+          .ICloudEnabled : "Cloud"
+      ]
+      
+      public init(rawValue : Int) { self.rawValue = rawValue }
+      
+      public var description: String {
+          Status.allCases.compactMap { self.contains($0) ? Status.names[$0] : nil }.joined(separator: " ")
+      }
 
-class OnOffView : NSImageView {
+}
+
+fileprivate enum ScanForChoice : CaseIterable {
+    case All
+    case Favourites
     
-    private static let images : [NSControl.StateValue : NSImage] = [
-        .on : NSImage(imageLiteralResourceName: NSImage.statusAvailableName),
-        .mixed : NSImage(imageLiteralResourceName: NSImage.statusPartiallyAvailableName),
-        .off : NSImage(imageLiteralResourceName: NSImage.statusUnavailableName)
-    ]
-    private static let noImage = NSImage(imageLiteralResourceName: NSImage.statusNoneName)
     
-    private static func getImage(for state: NSControl.StateValue?) -> NSImage {
-        var im : NSImage? = nil
-        if let s=state { im = OnOffView.images[s] }
-        return im ?? OnOffView.noImage
+    public var name : String { "\(self)" }
+    public var index : Int { ScanForChoice.allCases.firstIndex(of: self) ?? -1 }
+    public init?(_ n : String) {
+        guard let s = (ScanForChoice.allCases.first { n==$0.name }) else { return nil }
+        self=s
     }
-    
-    private var _state : NSControl.StateValue? = nil
-    public var state : NSControl.StateValue? {
-        get { _state }
-        set {
-            _state = newValue
-            self.image = OnOffView.getImage(for: _state)
-        }
-    }
-    
-    public convenience init() { self.init(frame: NSRect()) }
-    
-    public init(state: NSControl.StateValue?) {
-        super.init(frame: NSRect())
-        self.state=state
-    }
-    
-    public override init(frame frameRect: NSRect) {
-        super.init(frame: frameRect)
-        self.state=nil
-    }
-    
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        self.state=nil
+    public init?(_ n : Int) {
+        guard n>=0, n<ScanForChoice.allCases.count else { return nil }
+        self = ScanForChoice.allCases[n]
     }
 }
 
 
-class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewDataSource, BTPeripheralManagerDelegate, UserDataListener, PeripheralRowViewDelegate, NSComboBoxDataSource {
+class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, UserDataListener, PeripheralRowViewDelegate {
     public static let id = NSUserInterfaceItemIdentifier(rawValue: "__Enumerator_row")
-    
-    private enum ScanForChoice : CaseIterable {
-        case All
-        case Favourites
-        
-        
-        public var name : String { "\(self)" }
-        public var index : Int { ScanForChoice.allCases.firstIndex(of: self) ?? -1 }
-        public init?(_ n : String) {
-            guard let s = (ScanForChoice.allCases.first { n==$0.name }) else { return nil }
-            self=s
-        }
-        public init?(_ n : Int) {
-            guard n>=0, n<ScanForChoice.allCases.count else { return nil }
-            self = ScanForChoice.allCases[n]
-        }
-    }
-    
-    private struct Status : OptionSet, Hashable, CaseIterable, CustomStringConvertible {
-        public typealias AllCases = [Status]
-        public typealias RawValue = Int
-        public var rawValue : Int
-        
-        
-        public static let BTEnabled = Status(rawValue: 1)
-        public static let ICloudEnabled = Status(rawValue: 2)
-        public static let Disabled : Status = []
-        public static let Ready : Status = [.BTEnabled, .ICloudEnabled]
-        
-        public static let allCases : AllCases = [.BTEnabled, .ICloudEnabled]
-        private static let names : [Status : String] = [
-            .BTEnabled : "BT",
-            .ICloudEnabled : "Cloud"
-        ]
-        
-        public init(rawValue : Int) { self.rawValue = rawValue }
-        
-        public var description: String {
-            Status.allCases.compactMap { self.contains($0) ? Status.names[$0] : nil }.joined(separator: " ")
-        }
-  
+ 
+    private var scanning : ScanForChoice {
+        get { ScanForChoice(scanFor.indexOfSelectedItem) ?? .All }
+        set { DispatchQueue.main.async { self.scanFor.selectItem(at: newValue.index) } }
     }
     
 
@@ -128,7 +90,8 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         }
     }
     private var templates : [BLESerialTemplate] = []
-    
+    public var width : CGFloat { table.bounds.width }
+    public func isFavourite(device : UUID) -> Bool { self.favourites.contains(device) }
     
     
     public var id = UUID()
@@ -153,14 +116,6 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         scanning = .All
         
     }
-
-    
-    override func viewDidAppear() {
-        //bt.startScan()
-    }
-    override func viewWillDisappear() {
-        //bt.stopScan()
-    }
     
     public func readyToScan() {
         status.insert(.ICloudEnabled)
@@ -169,13 +124,7 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         templates.forEach { SysLog.info("Loaded template \($0)") }
         UserData.listen(self)
     }
-    
-    private var scanning : ScanForChoice {
-        get { ScanForChoice(scanFor.indexOfSelectedItem) ?? .All }
-        set { DispatchQueue.main.async { self.scanFor.selectItem(at: newValue.index) } }
-    }
-    
-    
+  
     @IBAction func scanForChange(_ sender: NSComboBox) {
         SysLog.info("Scan for state changed to \(scanning.name)")
     }
@@ -193,8 +142,6 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
             break
         }
     }
-    
-    
     
     public func valuesChanged(keys: [String]) {
         guard keys.contains("favourites") else { return }
@@ -217,10 +164,6 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
         UserData["favourites"] = favourites.map { $0.uuidString }
         SysLog.info("Favs are now: \(favourites.map { $0.uuidString })")
     }
-    
-    
-    
-    
     
     func create(peripheral: BTPeripheral) {
         guard bt.scanning else { return }
@@ -252,6 +195,9 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
             bt.stopScan()
         }
     }
+}
+
+extension EnumeratorController : NSTableViewDelegate, NSTableViewDataSource {
     
     // NSTableViewDataSource
     
@@ -289,6 +235,11 @@ class EnumeratorController : NSViewController, NSTableViewDelegate, NSTableViewD
     func tableView(_ tableView: NSTableView, didClick tableColumn: NSTableColumn) {
         
     }
+}
+
+extension EnumeratorController : NSComboBoxDataSource {
+    
+    
     
     // combo box datasource methods
     

@@ -45,6 +45,9 @@
 		E1D3B1EB244BB24E003D91EC /* logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1EA244BB24E003D91EC /* logging.swift */; };
 		E1D3B1EE244DE47F003D91EC /* storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1ED244DE47F003D91EC /* storage.swift */; };
 		E1D3B1F62453372A003D91EC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D3B1F52453372A003D91EC /* main.swift */; };
+		E1DB884F2457829E00F282BF /* template.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB884E2457829E00F282BF /* template.swift */; };
+		E1DB885024578B8000F282BF /* template.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB884E2457829E00F282BF /* template.swift */; };
+		E1DB885324578C3500F282BF /* onOffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB885224578C3500F282BF /* onOffView.swift */; };
 		E1E2F6DF23ECB3A900DF4E20 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6DE23ECB3A900DF4E20 /* main.swift */; };
 		E1E2F6E723ECB3C400DF4E20 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */; };
 		E1E2F6EA23ECB3EC00DF4E20 /* central.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6E923ECB3EC00DF4E20 /* central.swift */; };
@@ -101,6 +104,8 @@
 		E1D3B1ED244DE47F003D91EC /* storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = storage.swift; sourceTree = "<group>"; };
 		E1D3B1F32453372A003D91EC /* BTTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BTTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1D3B1F52453372A003D91EC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		E1DB884E2457829E00F282BF /* template.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = template.swift; sourceTree = "<group>"; };
+		E1DB885224578C3500F282BF /* onOffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onOffView.swift; sourceTree = "<group>"; };
 		E1E2F6DB23ECB3A900DF4E20 /* BT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BT; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1E2F6DE23ECB3A900DF4E20 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -137,6 +142,7 @@
 		E12270EA23ECDD57005492C8 /* BTApp */ = {
 			isa = PBXGroup;
 			children = (
+				E1DB885124578C2000F282BF /* controls */,
 				E1D3B1EC244DE466003D91EC /* preferences */,
 				E12270EB23ECDD57005492C8 /* AppDelegate.swift */,
 				E12270ED23ECDD59005492C8 /* Assets.xcassets */,
@@ -179,6 +185,7 @@
 			children = (
 				E164552423F3726C00ADAAA6 /* serial.swift */,
 				E164553223F5C40200ADAAA6 /* serialManager.swift */,
+				E1DB884E2457829E00F282BF /* template.swift */,
 			);
 			path = serialPort;
 			sourceTree = "<group>";
@@ -197,6 +204,14 @@
 				E1D3B1F52453372A003D91EC /* main.swift */,
 			);
 			path = BTTest;
+			sourceTree = "<group>";
+		};
+		E1DB885124578C2000F282BF /* controls */ = {
+			isa = PBXGroup;
+			children = (
+				E1DB885224578C3500F282BF /* onOffView.swift */,
+			);
+			path = controls;
 			sourceTree = "<group>";
 		};
 		E1E2F6D223ECB3A900DF4E20 = {
@@ -370,7 +385,9 @@
 				E12270EC23ECDD57005492C8 /* AppDelegate.swift in Sources */,
 				E164551223EDF93700ADAAA6 /* service.swift in Sources */,
 				E1D3B1E9244A5561003D91EC /* PeripheralRow.swift in Sources */,
+				E1DB885324578C3500F282BF /* onOffView.swift in Sources */,
 				E164552E23F3733C00ADAAA6 /* peripheralDelegate.swift in Sources */,
+				E1DB885024578B8000F282BF /* template.swift in Sources */,
 				E164553723F7466C00ADAAA6 /* message.swift in Sources */,
 				E1D3B1E32448B9A8003D91EC /* EnumeratorController.swift in Sources */,
 				E164551E23F0BAC900ADAAA6 /* delegates.swift in Sources */,
@@ -412,6 +429,7 @@
 				E164553623F7466C00ADAAA6 /* message.swift in Sources */,
 				E164552823F372BC00ADAAA6 /* centralDelegate.swift in Sources */,
 				E164551B23F0BA1300ADAAA6 /* delegates.swift in Sources */,
+				E1DB884F2457829E00F282BF /* template.swift in Sources */,
 				E1E2F6EA23ECB3EC00DF4E20 /* central.swift in Sources */,
 				E164550C23EDCD3B00ADAAA6 /* peripheral.swift in Sources */,
 				E11E7D7C23F8CE7200EF12BA /* target.swift in Sources */,

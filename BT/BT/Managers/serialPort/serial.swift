@@ -11,62 +11,6 @@
 import Foundation
 import CoreBluetooth
 
-public struct BLESerialTemplate : Hashable, CustomStringConvertible {
-    public private(set) var service : CBUUID
-    public private(set) var rx : CBUUID
-    public private(set) var tx : CBUUID
-    public private(set) var name : String
-    
-    init(service : CBUUID, rxtx : (CBUUID,CBUUID), name : String = "") {
-        self.service=service
-        self.rx=rxtx.0
-        self.tx=rxtx.1
-        self.name=name
-    }
-    init(service : CBUUID, rxtx : CBUUID, name : String = "") {
-        self.init(service: service, rxtx: (rxtx,rxtx), name: name)
-    }
-    
-    
-    init?(_ key : String, values : [String:Any]) {
-        guard let s = values["service"] as? String,
-            let r = values["rx"] as? String,
-            let t = values["tx"] as? String else { return nil }
-        self.service=CBUUID(string: s)
-        self.rx=CBUUID(string: r)
-        self.tx=CBUUID(string: t)
-        self.name=key
-    }
-    
-    init(_ port : BLESerialPort, name : String? = nil) {
-        self.service=port.service.identifier
-        self.rx=port.rx.identifier
-        self.tx=port.tx.identifier
-        self.name = name ?? port.deviceName ?? ""
-    }
-    
-    
-    
-    func implementedBy(_ p : BTPeripheral) -> Bool {
-        BLEBaseSerial(peripheral: p, template: self) != nil
-    }
-    
-    var serialised : [String:Any] {
-        [ "service" : service.description,
-          "rx" : rx.description,
-          "tx" : tx.description
-        ]
-    }
-    
-    public var description: String {
-        serialised.map { "\($0.key)=\($0.value)" }.joined(separator: " ")
-    }
-    
-    public static func ^(_ l : BLESerialTemplate,_ r : CBUUID) -> Bool { l.service==r }
-    public static func ^(_ l : CBUUID,_ r : BLESerialTemplate) -> Bool { l==r.service }
-    
-    
-}
 
 public protocol BLESerialPort : BTCharacteristicDelegate, CustomStringConvertible {
     
@@ -75,7 +19,7 @@ public protocol BLESerialPort : BTCharacteristicDelegate, CustomStringConvertibl
     var tx : BTCharacteristic { get }
     var delegate : BLESerialDevicesDelegate? { get set }
     
-    init?(peripheral : BTPeripheral,template : BLESerialTemplate)
+    init?(peripheral : BTPeripheral,template : BLESerialTemplate) 
     init?(_ service : BTService,rxtx : CBUUID)
     
     var connected : Bool { get }
