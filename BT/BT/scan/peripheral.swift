@@ -61,9 +61,8 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         device.discoverServices(services)
     }
     
-    @discardableResult public func match(_ templates : [BLESerialTemplate]) -> Bool {
-        matchedTemplate = templates.first { uuids.contains($0.service) }
-        return matchedTemplate != nil
+    public func match(_ template : BLESerialTemplate?) {
+        matchedTemplate = template
     }
     public var isMatched : Bool { matchedTemplate != nil }
     public var matchedService : BTService? {

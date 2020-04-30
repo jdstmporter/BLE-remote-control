@@ -28,14 +28,15 @@ public class ServiceCharacteristicSet {
 
 public class BTServiceManager : BTServiceDelegate {
     public static let BTServiceDiscoveredEvent = Notification.Name("__BTServiceDiscoveredEvent_Name")
-    
+    public typealias Callback = ([CBUUID]) -> ()
     public enum State {
         case Waiting
-        case Discovering
+        case Matching
         case Ready
     }
     private var service : BTService
     public private(set) var state : State
+    private var matched : Bool? = nil
     
     public init(_ service: BTService) {
         self.service=service
@@ -48,7 +49,7 @@ public class BTServiceManager : BTServiceDelegate {
         switch state {
         case .Waiting:
             service.discoverCharacteristics()
-            next = .Discovering
+            next = .Matching
         case .Ready:
             service.forEach { $0.read() }
         default:
@@ -57,11 +58,26 @@ public class BTServiceManager : BTServiceDelegate {
         state = next
     }
     
+    public var uuids : [CBUUID] { service.uuids }
+    
+ 
+    
+    public func matched(template : BLESerialTemplate) -> Bool {
+        guard state == .Ready else { return false }
+        return self.service.identifier==template.service &&
+            self.uuids.contains(template.rx) &&
+            self.uuids.contains(template.tx)
+    }
+    
     public func discoveredCharacteristics() {
         state = .Ready
         let notification=Notification(name: BTServiceManager.BTServiceDiscoveredEvent, object: nil, userInfo: ["service": service])
         NotificationCenter.default.post(notification)
-        BTCentral.shared.delegate?.configured(service: service)
+        let newM = service.probeTemplates()
+        if newM != matched {
+            BTCentral.shared.delegate?.configured(service: service)
+        }
+        matched=newM
         run()
     }
     

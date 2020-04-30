@@ -18,13 +18,21 @@ public class BTService : Sequence {
     public private(set) var peripheral : BTPeripheral
     private var characteristics : [CBUUID:BTCharacteristic]
     public var delegate : BTServiceDelegate?
+    private var templates : [BLESerialTemplate] = []
     
     public init(_ service : CBService, peripheral : BTPeripheral) {
         self.service=service
         self.identifier=service.uuid
         self.peripheral=peripheral
         self.characteristics=[:]
+        self.loadTemplates()
     }
+    
+    private func loadTemplates() {
+        templates.removeAll()
+        templates=[BLESerialTemplate(service: CBUUID(string:"FFE0"), rxtx: CBUUID(string:"FFE1"), name: "Ble-Nano")]
+    }
+    
     public var connected : Bool { return peripheral.connected }
     public var primary : Bool { return service.isPrimary }
     public var uuids : [CBUUID] { return Array(characteristics.keys) }
@@ -51,6 +59,26 @@ public class BTService : Sequence {
             SysLog.debug(">> PERIPHERAL \(self.peripheral.identifier) - \(self.peripheral.localName ?? "-")")
             SysLog.debug(">>>> Service \(self.identifier) has \(c.count) characteristics")
         }
+    }
+    
+    private func matches() -> BLESerialTemplate? {
+        guard let m = (templates.first { identifier == $0.service }),
+            self[m.rx] != nil,
+            self[m.tx] != nil else { return nil }
+        return m
+    }
+    
+    @discardableResult public func probeTemplates() -> Bool {
+        SysLog.info("Matching templates to \(identifier) on \(peripheral)")
+        SysLog.info("Characteristics: ")
+        self.characteristics.forEach { kv in
+            SysLog.info("\(kv.key) -> \(kv.value)")
+        }
+        let m = matches()
+        if let mm=m { SysLog.info("Matched to \(mm)") }
+        else { SysLog.info("Didn't match") }
+        peripheral.match(m)
+        return m != nil
     }
     
     public func read(_ uuid : CBUUID) {

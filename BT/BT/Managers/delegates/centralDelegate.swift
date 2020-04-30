@@ -43,7 +43,7 @@ public class BTSystemManager : BTCentralDelegate {
     
     public func configured(service: BTService) {
         SysLog.debug("Have configured service \(service)")
-        //delegate?.update(peripheral: service.peripheral)
+        delegate?.update(peripheral: service.peripheral)
     }
     
     

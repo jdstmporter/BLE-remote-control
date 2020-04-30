@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E287" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Favourite" representedClassName="Favourite" syncable="YES" codeGenerationType="class">
+        <attribute name="identifier" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Favourites" inverseName="items" inverseEntity="Favourites"/>
+    </entity>
+    <entity name="Favourites" representedClassName="Favourites" syncable="YES" codeGenerationType="class">
+        <relationship name="items" toMany="YES" deletionRule="Nullify" destinationEntity="Favourite" inverseName="parent" inverseEntity="Favourite"/>
+    </entity>
+    <fetchRequest name="allFavourites" entity="Favourites"/>
+    <elements>
+        <element name="Favourite" positionX="-63" positionY="-18" width="128" height="73"/>
+        <element name="Favourites" positionX="-45" positionY="9" width="128" height="58"/>
+    </elements>
+</model>

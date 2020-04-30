@@ -119,6 +119,10 @@ public class BTPeripheralManager : BTPeripheralDelegate {
         
     }
     
+    public func matchedServices() {
+        
+    }
+    
     public func discoveredIncludedServices() {
         
     }

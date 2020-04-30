@@ -25,6 +25,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var controller: EnumeratorController!
     @IBOutlet weak var window: NSWindow!
     var ser : BLESerialDevices<BLEBaseSerial>!
+    
+    
         
     
 
@@ -35,6 +37,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         //ser = BLESerialDevices(service: CBUUID(string: "FFE0"),characteristic: CBUUID(string: "FFE1"))
         //ser.delegate=Delegate()
         //ser.start()
+        
     }
     
     

@@ -168,10 +168,9 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
     func create(peripheral: BTPeripheral) {
         guard bt.scanning else { return }
         SysLog.info("**** Adding \(peripheral)")
-        peripheral.match(templates)
+        
         devs[peripheral.identifier]=peripheral
         
-        SysLog.debug("Match is : \(peripheral.matchedTemplate?.description ?? "-")")
         DispatchQueue.main.async { self.table.reloadData() }
     }
     
