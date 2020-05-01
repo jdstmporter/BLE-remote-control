@@ -26,7 +26,7 @@ public class ServiceCharacteristicSet {
 
 
 
-public class BTServiceManager : BTServiceDelegate {
+public class BTServiceManager : BTBasicDelegate, BTServiceDelegate {
     public static let BTServiceDiscoveredEvent = Notification.Name("__BTServiceDiscoveredEvent_Name")
     public typealias Callback = ([CBUUID]) -> ()
     public enum State {
@@ -37,6 +37,7 @@ public class BTServiceManager : BTServiceDelegate {
     private var service : BTService
     public private(set) var state : State
     private var matched : Bool? = nil
+    public var delegate : BTPeripheralManagerDelegate?
     
     public init(_ service: BTService) {
         self.service=service
@@ -73,9 +74,10 @@ public class BTServiceManager : BTServiceDelegate {
         state = .Ready
         let notification=Notification(name: BTServiceManager.BTServiceDiscoveredEvent, object: nil, userInfo: ["service": service])
         NotificationCenter.default.post(notification)
-        let newM = service.probeTemplates()
+        let newM = service.matches()
         if newM != matched {
-            BTCentral.shared.delegate?.configured(service: service)
+            SysLog.debug("Have configured service \(service)")
+            delegate?.update(peripheral: service.peripheral)
         }
         matched=newM
         run()

@@ -31,7 +31,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     public private(set) var uuids : [CBUUID]
     private var ads : [String:Any]
     
-    public private(set) var matchedTemplate : BLESerialTemplate?
+    //public private(set) var matchedTemplate : BLESerialTemplate?
     
     public init(_ device : CBPeripheral,advertisementData: [String: Any] = [:],rssi: Double) {
         self.device = device
@@ -61,14 +61,10 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         device.discoverServices(services)
     }
     
-    public func match(_ template : BLESerialTemplate?) {
-        matchedTemplate = template
-    }
-    public var isMatched : Bool { matchedTemplate != nil }
-    public var matchedService : BTService? {
-        guard let uuid = matchedTemplate?.service else { return nil }
-        return services[uuid]
-    }
+    public func match() { services.forEach { $0.value.matches() } }
+    public var matchedServices : [BTService] { services.values.filter { $0.isMatched } }
+    public var matchedUUIDs : [CBUUID] { matchedServices.map { $0.identifier } }
+    public var isMatched : Bool { matchedServices.count > 0 }
     
     
     private func servicesFound() {

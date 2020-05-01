@@ -9,10 +9,11 @@
 import Foundation
 import CoreBluetooth
 
-public class BTSystemManager : BTCentralDelegate {
+public class BTSystemManager : BTBasicDelegate, BTCentralDelegate, BTSystemManagement {
     
     private static let queue = DispatchQueue(label: "BTEnumerateQueue", qos: .background)
     
+    public var templates : [BLESerialTemplate] = []
     private var managers : [BTPeripheralManager] = []
     public private(set) var services : [CBUUID]? = nil
     public var delegate : BTPeripheralManagerDelegate?
@@ -29,7 +30,9 @@ public class BTSystemManager : BTCentralDelegate {
         BTCentral.shared.delegate=self
     }
     
-    
+    public func run() {
+        startScan()
+    }
     
     public func startScan() {
         scanning=true
@@ -40,12 +43,12 @@ public class BTSystemManager : BTCentralDelegate {
         BTSystemManager.queue.async { BTCentral.shared.stopScan() }
     }
     
-    
+    /*
     public func configured(service: BTService) {
         SysLog.debug("Have configured service \(service)")
         delegate?.update(peripheral: service.peripheral)
     }
-    
+    */
     
     
     public func discovered(device: BTPeripheral, new: Bool) {

@@ -49,6 +49,8 @@
 		E1DB885024578B8000F282BF /* template.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB884E2457829E00F282BF /* template.swift */; };
 		E1DB885324578C3500F282BF /* onOffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB885224578C3500F282BF /* onOffView.swift */; };
 		E1DB8855245985D900F282BF /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1DB8854245985D900F282BF /* CoreData.framework */; };
+		E1DB8860245CBCF100F282BF /* templates.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB885F245CBCF100F282BF /* templates.swift */; };
+		E1DB8862245CDE5E00F282BF /* atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB8861245CDE5E00F282BF /* atomic.swift */; };
 		E1E2F6DF23ECB3A900DF4E20 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6DE23ECB3A900DF4E20 /* main.swift */; };
 		E1E2F6E723ECB3C400DF4E20 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */; };
 		E1E2F6EA23ECB3EC00DF4E20 /* central.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6E923ECB3EC00DF4E20 /* central.swift */; };
@@ -108,6 +110,8 @@
 		E1DB884E2457829E00F282BF /* template.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = template.swift; sourceTree = "<group>"; };
 		E1DB885224578C3500F282BF /* onOffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onOffView.swift; sourceTree = "<group>"; };
 		E1DB8854245985D900F282BF /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		E1DB885F245CBCF100F282BF /* templates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = templates.swift; sourceTree = "<group>"; };
+		E1DB8861245CDE5E00F282BF /* atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = atomic.swift; sourceTree = "<group>"; };
 		E1E2F6DB23ECB3A900DF4E20 /* BT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BT; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1E2F6DE23ECB3A900DF4E20 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -157,6 +161,7 @@
 				E1D3B1E6244A543A003D91EC /* PeripheralRow.xib */,
 				E1D3B1E8244A5561003D91EC /* PeripheralRow.swift */,
 				E1D3B1EA244BB24E003D91EC /* logging.swift */,
+				E1DB8861245CDE5E00F282BF /* atomic.swift */,
 			);
 			path = BTApp;
 			sourceTree = "<group>";
@@ -197,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				E1D3B1ED244DE47F003D91EC /* storage.swift */,
+				E1DB885F245CBCF100F282BF /* templates.swift */,
 			);
 			path = preferences;
 			sourceTree = "<group>";
@@ -390,6 +396,7 @@
 				E164551223EDF93700ADAAA6 /* service.swift in Sources */,
 				E1D3B1E9244A5561003D91EC /* PeripheralRow.swift in Sources */,
 				E1DB885324578C3500F282BF /* onOffView.swift in Sources */,
+				E1DB8860245CBCF100F282BF /* templates.swift in Sources */,
 				E164552E23F3733C00ADAAA6 /* peripheralDelegate.swift in Sources */,
 				E1DB885024578B8000F282BF /* template.swift in Sources */,
 				E164553723F7466C00ADAAA6 /* message.swift in Sources */,
@@ -402,6 +409,7 @@
 				E164551623EF343E00ADAAA6 /* characteristic.swift in Sources */,
 				E164553023F3734200ADAAA6 /* serial.swift in Sources */,
 				E12270F823ECDD7E005492C8 /* central.swift in Sources */,
+				E1DB8862245CDE5E00F282BF /* atomic.swift in Sources */,
 				E1D3B1EE244DE47F003D91EC /* storage.swift in Sources */,
 				E164552D23F3733900ADAAA6 /* centralDelegate.swift in Sources */,
 				E164552F23F3733F00ADAAA6 /* serviceDelegate.swift in Sources */,

@@ -48,7 +48,7 @@ class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataS
     @IBOutlet weak var services: NSTableView!
     @IBOutlet weak var favourite: NSButton!
     
-    private var matched : CBUUID?
+    private var matchedServices : [CBUUID] = []
     public var delegate : PeripheralRowViewDelegate? = nil
     public var peripheral : BTPeripheral? = nil { didSet { self.touch() } }
     public var isFavourite : Bool { favourite?.state == .on }
@@ -56,7 +56,7 @@ class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataS
     
     public func touch(isFavourite : Bool = false) {
         guard let p=self.peripheral else { return }
-        self.matched = p.matchedTemplate?.service
+        self.matchedServices = p.matchedUUIDs
         DispatchQueue.main.async {
             self.name?.stringValue = p.localName ?? ""
             self.uuid?.stringValue = p.identifier.uuidString
@@ -101,7 +101,8 @@ class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataS
             }
         }
         else if col=="Template" {
-            let st = NSControl.StateValue(id =? self.matched)
+            let matched = self.matchedServices.contains(id)
+            let st = NSControl.StateValue(matched)
             if let view = services.makeView(withIdentifier: PeripheralRowView.sw, owner: self) as? OnOffView {
                 view.state = st
                 return view

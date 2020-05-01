@@ -9,7 +9,30 @@
 import Foundation
 import CoreBluetooth
 
+public protocol BTEntity {
+    
+}
+
+
+public protocol BTSystemManagement {
+    
+    var templates : [BLESerialTemplate] { get set }
+    var scanning : Bool { get }
+    
+    func startScan()
+    func stopScan()
+}
+public protocol BTBasicDelegate {
+    func run()
+    var delegate : BTPeripheralManagerDelegate? { get set }
+}
+
+
+
+
+
 public protocol BTPeripheralManagerDelegate {
+
     func create(peripheral: BTPeripheral)
     func remove(peripheral: BTPeripheral)
     func update(peripheral: BTPeripheral)
@@ -17,13 +40,8 @@ public protocol BTPeripheralManagerDelegate {
     func systemStateChanged(alive: Bool)
 }
 
-public class BTPeripheralManager : BTPeripheralDelegate {
-    
-    
- 
-    
-
-    
+public class BTPeripheralManager : BTBasicDelegate, BTPeripheralDelegate {
+   
     internal enum State {
         case Disconnected
         case Connecting
@@ -113,6 +131,7 @@ public class BTPeripheralManager : BTPeripheralDelegate {
         delegate?.update(peripheral: device)
         self.managers = self.services.map { service in
             let manager = BTServiceManager(service)
+            manager.delegate=delegate
             manager.run()
             return manager
         }

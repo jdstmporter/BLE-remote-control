@@ -18,20 +18,16 @@ public class BTService : Sequence {
     public private(set) var peripheral : BTPeripheral
     private var characteristics : [CBUUID:BTCharacteristic]
     public var delegate : BTServiceDelegate?
-    private var templates : [BLESerialTemplate] = []
+    public private(set) var matchedTemplate : BLESerialTemplate?
     
     public init(_ service : CBService, peripheral : BTPeripheral) {
         self.service=service
         self.identifier=service.uuid
         self.peripheral=peripheral
         self.characteristics=[:]
-        self.loadTemplates()
     }
     
-    private func loadTemplates() {
-        templates.removeAll()
-        templates=[BLESerialTemplate(service: CBUUID(string:"FFE0"), rxtx: CBUUID(string:"FFE1"), name: "Ble-Nano")]
-    }
+    
     
     public var connected : Bool { return peripheral.connected }
     public var primary : Bool { return service.isPrimary }
@@ -41,10 +37,7 @@ public class BTService : Sequence {
         let a=Array(characteristics.values)
         return a.makeIterator()
     }
-    public var isMatched : Bool {
-        guard let uuid = peripheral.matchedTemplate?.service else { return false }
-        return uuid==identifier
-    }
+    
     
     public func discovered() {
         self.characteristics.removeAll()
@@ -61,25 +54,16 @@ public class BTService : Sequence {
         }
     }
     
-    private func matches() -> BLESerialTemplate? {
-        guard let m = (templates.first { identifier == $0.service }),
-            self[m.rx] != nil,
-            self[m.tx] != nil else { return nil }
-        return m
-    }
-    
-    @discardableResult public func probeTemplates() -> Bool {
-        SysLog.info("Matching templates to \(identifier) on \(peripheral)")
-        SysLog.info("Characteristics: ")
-        self.characteristics.forEach { kv in
-            SysLog.info("\(kv.key) -> \(kv.value)")
+    @discardableResult public func matches() -> Bool {
+        if let m = Templates.match(self), self[m.rx] != nil, self[m.tx] != nil {
+            self.matchedTemplate = m
         }
-        let m = matches()
-        if let mm=m { SysLog.info("Matched to \(mm)") }
-        else { SysLog.info("Didn't match") }
-        peripheral.match(m)
-        return m != nil
+        else { self.matchedTemplate = nil }
+        return self.matchedTemplate != nil
     }
+    public var isMatched : Bool { matchedTemplate != nil }
+    
+  
     
     public func read(_ uuid : CBUUID) {
         self[uuid]?.read()
@@ -87,8 +71,7 @@ public class BTService : Sequence {
     
     
     public func discoverCharacteristics() {
-        let uuids = peripheral.matchedTemplate?.characteristics
-        self.peripheral.device.discoverCharacteristics(uuids, for: self.service)
+        self.peripheral.device.discoverCharacteristics(nil, for: self.service)
     }
     
     

@@ -11,8 +11,8 @@ import Foundation
 
 public protocol BTCentralDelegate {
     func discovered(device: BTPeripheral,new: Bool)
-    func configured(service: BTService)
     func changedState()
+    
 }
 
 public protocol BTPeripheralDelegate {
