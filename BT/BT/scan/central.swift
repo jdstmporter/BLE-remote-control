@@ -32,7 +32,7 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
     
     //private var semaphore : DispatchSemaphore? = nil
     private var central : CBCentralManager!
-    public var delegate : BTSystemManager?
+    public var delegate : BTPeripheralManagerDelegate?
     public private(set) var state : CBManagerState
     public var alive : Bool { return state == .poweredOn }
     private var ble : BLE = .Unknown
@@ -55,6 +55,7 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
     public var count : Int { return peripherals.count }
     public func makeIterator() -> Iterator { self.peripherals.values.makeIterator() }
    
+    public var scanning : Bool { self.central.isScanning }
     public func scan(services : [CBUUID]? = nil) {
         SysLog.info("******** trying to scan with \(services?.description ?? "nil")")
             if(!self.central.isScanning) {
@@ -114,25 +115,26 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
             
         }
         SysLog.info("Central manager has changed state: \(state)")
-        delegate?.changedState()
+        //delegate?.changedState()
+        delegate?.systemStateChanged(alive: BTCentral.shared.alive)
     }
     
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         if let p=self[peripheral] {
-            p.delegate?.connected()
+            p.hasConnected()
             //p.scan()
         }
     }
     
     public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         if let p=self[peripheral] {
-            p.delegate?.failedToConnect()
+            p.hasFailedToConnect()
         }
     }
     
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         if let p=self[peripheral] {
-            p.delegate?.disconnected()
+            p.hasDisconnected()
         }
     }
     
@@ -145,8 +147,10 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
             let new = self[identifier] == nil
             if new {
                 let p=BTPeripheral(peripheral,advertisementData: ads, rssi: Double(truncating: RSSI))
+                p.delegate=self.delegate
                 self[p.identifier]=p
-                self.delegate?.discovered(device: self[identifier]!,new : new)
+                if new { p.connect() }
+                //self.delegate?.discovered(device: p, new: new)
             }
             
                 

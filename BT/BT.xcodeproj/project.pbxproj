@@ -27,12 +27,6 @@
 		E164552223F0BC0700ADAAA6 /* system.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164552123F0BC0700ADAAA6 /* system.swift */; };
 		E164552323F0BC0C00ADAAA6 /* system.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164552123F0BC0700ADAAA6 /* system.swift */; };
 		E164552523F3726C00ADAAA6 /* serial.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164552423F3726C00ADAAA6 /* serial.swift */; };
-		E164552823F372BC00ADAAA6 /* centralDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164552723F372BC00ADAAA6 /* centralDelegate.swift */; };
-		E164552A23F372E500ADAAA6 /* peripheralDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164552923F372E500ADAAA6 /* peripheralDelegate.swift */; };
-		E164552C23F3730F00ADAAA6 /* serviceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164552B23F3730F00ADAAA6 /* serviceDelegate.swift */; };
-		E164552D23F3733900ADAAA6 /* centralDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164552723F372BC00ADAAA6 /* centralDelegate.swift */; };
-		E164552E23F3733C00ADAAA6 /* peripheralDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164552923F372E500ADAAA6 /* peripheralDelegate.swift */; };
-		E164552F23F3733F00ADAAA6 /* serviceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164552B23F3730F00ADAAA6 /* serviceDelegate.swift */; };
 		E164553023F3734200ADAAA6 /* serial.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164552423F3726C00ADAAA6 /* serial.swift */; };
 		E164553323F5C40200ADAAA6 /* serialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164553223F5C40200ADAAA6 /* serialManager.swift */; };
 		E164553423F5C40600ADAAA6 /* serialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E164553223F5C40200ADAAA6 /* serialManager.swift */; };
@@ -94,9 +88,6 @@
 		E164551C23F0BA3C00ADAAA6 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		E164552123F0BC0700ADAAA6 /* system.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = system.swift; sourceTree = "<group>"; };
 		E164552423F3726C00ADAAA6 /* serial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = serial.swift; sourceTree = "<group>"; };
-		E164552723F372BC00ADAAA6 /* centralDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = centralDelegate.swift; sourceTree = "<group>"; };
-		E164552923F372E500ADAAA6 /* peripheralDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = peripheralDelegate.swift; sourceTree = "<group>"; };
-		E164552B23F3730F00ADAAA6 /* serviceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = serviceDelegate.swift; sourceTree = "<group>"; };
 		E164553223F5C40200ADAAA6 /* serialManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = serialManager.swift; sourceTree = "<group>"; };
 		E164553523F7466C00ADAAA6 /* message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = message.swift; sourceTree = "<group>"; };
 		E1D3B1E22448B9A8003D91EC /* EnumeratorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumeratorController.swift; sourceTree = "<group>"; };
@@ -181,9 +172,6 @@
 		E164552623F372A500ADAAA6 /* delegates */ = {
 			isa = PBXGroup;
 			children = (
-				E164552723F372BC00ADAAA6 /* centralDelegate.swift */,
-				E164552923F372E500ADAAA6 /* peripheralDelegate.swift */,
-				E164552B23F3730F00ADAAA6 /* serviceDelegate.swift */,
 			);
 			path = delegates;
 			sourceTree = "<group>";
@@ -397,7 +385,6 @@
 				E1D3B1E9244A5561003D91EC /* PeripheralRow.swift in Sources */,
 				E1DB885324578C3500F282BF /* onOffView.swift in Sources */,
 				E1DB8860245CBCF100F282BF /* templates.swift in Sources */,
-				E164552E23F3733C00ADAAA6 /* peripheralDelegate.swift in Sources */,
 				E1DB885024578B8000F282BF /* template.swift in Sources */,
 				E164553723F7466C00ADAAA6 /* message.swift in Sources */,
 				E1D3B1E32448B9A8003D91EC /* EnumeratorController.swift in Sources */,
@@ -411,8 +398,6 @@
 				E12270F823ECDD7E005492C8 /* central.swift in Sources */,
 				E1DB8862245CDE5E00F282BF /* atomic.swift in Sources */,
 				E1D3B1EE244DE47F003D91EC /* storage.swift in Sources */,
-				E164552D23F3733900ADAAA6 /* centralDelegate.swift in Sources */,
-				E164552F23F3733F00ADAAA6 /* serviceDelegate.swift in Sources */,
 				E164550D23EDD63A00ADAAA6 /* peripheral.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -431,15 +416,12 @@
 			files = (
 				E164551523EF327700ADAAA6 /* characteristic.swift in Sources */,
 				E164550F23EDF62100ADAAA6 /* async.swift in Sources */,
-				E164552A23F372E500ADAAA6 /* peripheralDelegate.swift in Sources */,
 				E164552223F0BC0700ADAAA6 /* system.swift in Sources */,
 				E1E2F6DF23ECB3A900DF4E20 /* main.swift in Sources */,
-				E164552C23F3730F00ADAAA6 /* serviceDelegate.swift in Sources */,
 				E164551D23F0BA3C00ADAAA6 /* extensions.swift in Sources */,
 				E164553323F5C40200ADAAA6 /* serialManager.swift in Sources */,
 				E164552523F3726C00ADAAA6 /* serial.swift in Sources */,
 				E164553623F7466C00ADAAA6 /* message.swift in Sources */,
-				E164552823F372BC00ADAAA6 /* centralDelegate.swift in Sources */,
 				E164551B23F0BA1300ADAAA6 /* delegates.swift in Sources */,
 				E1DB884F2457829E00F282BF /* template.swift in Sources */,
 				E1E2F6EA23ECB3EC00DF4E20 /* central.swift in Sources */,

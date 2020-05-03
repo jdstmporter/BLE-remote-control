@@ -7,7 +7,39 @@
 //
 
 import Foundation
+import CoreBluetooth
 
+public protocol BTEntity {
+    
+}
+
+
+public protocol BTSystemManagement {
+    
+    var templates : [BLESerialTemplate] { get set }
+    var scanning : Bool { get }
+    
+    func startScan()
+    func stopScan()
+}
+public protocol BTBasicDelegate {
+    func run()
+    var delegate : BTPeripheralManagerDelegate? { get set }
+}
+
+
+
+
+
+public protocol BTPeripheralManagerDelegate {
+
+    func create(peripheral: BTPeripheral)
+    func remove(peripheral: BTPeripheral)
+    func update(peripheral: BTPeripheral)
+    
+    func systemStateChanged(alive: Bool)
+    func receivedValue(_ : Data,onService: CBUUID, characteristic: CBUUID)
+}
 
 public protocol BTCentralDelegate {
     func discovered(device: BTPeripheral,new: Bool)

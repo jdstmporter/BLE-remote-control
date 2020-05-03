@@ -22,8 +22,8 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         case RSSI
         case Services
     }
-    
-    public var delegate : BTPeripheralManager?
+    public var delegate : BTPeripheralManagerDelegate?
+    //public var delegate : BTPeripheralManager?
     public private(set) var identifier : UUID
     public private(set) var rssi : Double
     public private(set) var device : CBPeripheral
@@ -76,9 +76,47 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
             let bts = BTService(service, peripheral: self)
             self.services[bts.identifier]=bts
         }
-
-        delegate?.discoveredServices()
         
+        SysLog.debug("\(device.identifier) has discovered services")
+        delegate?.update(peripheral: self)
+        
+        self.services.forEach { kv in
+            let service = kv.value
+            if service.isWeakMatch {
+                SysLog.info("\(self) : weak match for \(service)")
+                service.delegate=self.delegate
+                service.run()
+            }
+        }
+        //delegate?.discoveredServices()
+        
+    }
+    
+    private func tellAllCharacteristics(action: (BTCharacteristic) -> ()) {
+        self.forEach { serviceID in
+            let service = self[serviceID]
+            service?.forEach { action($0) }
+        }
+    }
+    
+    
+    public func hasConnected() {
+        guard state == .connected else { return }
+        SysLog.info("\(device.identifier) connected")
+        tellAllCharacteristics(action: { $0.delegate?.didConnect() } )
+        delegate?.create(peripheral: self)
+        self.scan()
+    }
+    
+    public func hasDisconnected() {
+        SysLog.debug("\(device.identifier) disconnected")
+        tellAllCharacteristics(action: { $0.delegate?.didDisconnect() } )
+        delegate?.remove(peripheral: self)
+        self.connect()
+    }
+    
+    public func hasFailedToConnect() {
+        SysLog.error("\(device.identifier) failed to connect")
     }
     
     public func makeIterator() -> Array<BTPeripheral.Element>.Iterator {
@@ -101,7 +139,8 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     
     public func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
         SysLog.debug("Peripheral \(identifier) : local name updated: \(localName ?? "")")
-        delegate?.updatedName()
+        //delegate?.updatedName()
+        delegate?.update(peripheral: self)
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
@@ -112,7 +151,8 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         rssi=RSSI.doubleValue
         SysLog.debug("Peripheral \(identifier) : RSSI: \(rssi)")
         //delegate?.readRSSI(rssi: rssi)
-        delegate?.readRSSI(rssi: rssi)
+        //delegate?.readRSSI(rssi: rssi)
+        delegate?.update(peripheral: self)
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
@@ -141,7 +181,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
             SysLog.error("Peripheral \(identifier) : discover characteristics error \(e)")
             return
         }
-        self[service]?.discovered()
+        self[service]?.discoveredCharacteristics()
     }
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if let e=error {
@@ -152,7 +192,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
             return
         }
         if let service = self[characteristic], let c=service[characteristic] {
-            service.delegate?.updatedCharacteristic(c)
+            service.updatedCharacteristic(c)
             
         }
     }

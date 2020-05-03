@@ -13,9 +13,12 @@ public protocol BLESerialDevicesDelegate {
     func discoveredSerialPort(_ : BLESerialPort)
 }
 
-
+public let BTServiceDiscoveredEvent = Notification.Name("__BTServiceDiscoveredEvent_Name")
 
 public class BLESerialDevices<PORT : BLESerialPort> : Sequence {
+    
+    
+    
     public typealias Element = BLESerialPort
     public typealias Iterator = Array<Element>.Iterator
     
@@ -29,7 +32,7 @@ public class BLESerialDevices<PORT : BLESerialPort> : Sequence {
     private var service: CBUUID
     private var characteristic : CBUUID
     public private(set) var devices : [BLESerialPort]
-    private var scanner : BTSystemManager!
+    private var scanner : BTCentral!
     public var delegate : BLESerialDevicesDelegate?
     
     public init(service : CBUUID,characteristic : CBUUID) {
@@ -62,13 +65,13 @@ public class BLESerialDevices<PORT : BLESerialPort> : Sequence {
     
     public func start() {
         
-        NotificationCenter.default.addObserver(forName: BTServiceManager.BTServiceDiscoveredEvent, object: nil, queue: nil) { notification in
+        NotificationCenter.default.addObserver(forName: BTServiceDiscoveredEvent, object: nil, queue: nil) { notification in
             do {
                 try self.process(notification)
             }
             catch let e { SysLog.error("Error : \(e)") }
         }
-        scanner = BTSystemManager(services: [service])
+        scanner = BTCentral()
     }
     
     

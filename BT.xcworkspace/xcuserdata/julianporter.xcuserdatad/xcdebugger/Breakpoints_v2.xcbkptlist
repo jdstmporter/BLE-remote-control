@@ -73,8 +73,8 @@
             filePath = "BT/BT/scan/central.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
             landmarkName = "scan(services:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -89,8 +89,8 @@
             filePath = "BT/BTApp/EnumeratorController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "150"
-            endingLineNumber = "150"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
             landmarkName = "scanAction(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -108,6 +108,22 @@
             startingLineNumber = "51"
             endingLineNumber = "51"
             landmarkName = "init(store:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E4ED0097-E8EA-44A8-B3CF-08C53EDC2AA6"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BT/BTApp/EnumeratorController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "203"
+            endingLineNumber = "203"
+            landmarkName = "systemStateChanged(alive:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -9,7 +9,7 @@
 import Foundation
 import CoreBluetooth
 
-public class BTService : Sequence {
+public class BTService : BTServiceDelegate, Sequence {
     public typealias Element = BTCharacteristic
     public typealias Iterator = Array<Element>.Iterator
     
@@ -17,7 +17,8 @@ public class BTService : Sequence {
     public private(set) var identifier : CBUUID
     public private(set) var peripheral : BTPeripheral
     private var characteristics : [CBUUID:BTCharacteristic]
-    public var delegate : BTServiceDelegate?
+    public var delegate : BTPeripheralManagerDelegate?
+    //public var delegate : BTServiceDelegate?
     public private(set) var matchedTemplate : BLESerialTemplate?
     
     public init(_ service : CBService, peripheral : BTPeripheral) {
@@ -27,8 +28,6 @@ public class BTService : Sequence {
         self.characteristics=[:]
     }
     
-    
-    
     public var connected : Bool { return peripheral.connected }
     public var primary : Bool { return service.isPrimary }
     public var uuids : [CBUUID] { return Array(characteristics.keys) }
@@ -37,26 +36,28 @@ public class BTService : Sequence {
         let a=Array(characteristics.values)
         return a.makeIterator()
     }
+    public subscript(_ uuid: CBUUID) -> BTCharacteristic? { return self.characteristics[uuid] }
+    public subscript(_ c: CBCharacteristic) -> BTCharacteristic? { return self.characteristics[c.uuid] }
+    
+    public func read(_ uuid : CBUUID) { self[uuid]?.read() }
+    public func readAll() { self.forEach { $0.read() } }
     
     
-    public func discovered() {
-        self.characteristics.removeAll()
-        service.characteristics?.forEach { c in
-            let characteristic=BTCharacteristic(c)
-            self.characteristics[characteristic.identifier]=characteristic
-        }
-        delegate?.discoveredCharacteristics()
-        
-        let c=service.characteristics ?? []
-        if c.count>0 {
-            SysLog.debug(">> PERIPHERAL \(self.peripheral.identifier) - \(self.peripheral.localName ?? "-")")
-            SysLog.debug(">>>> Service \(self.identifier) has \(c.count) characteristics")
+    public func run() {
+        self.peripheral.device.discoverCharacteristics(nil, for: self.service)
+    }
+    
+    private var matched : Bool? = nil {
+        didSet {
+            if matched != oldValue {
+                SysLog.debug("Have configured service \(service)")
+                delegate?.update(peripheral: peripheral)
+            }
         }
     }
     
-    public func weakMatch() -> Bool {
-        Templates.match(self) != nil
-    }
+    public var isMatched : Bool { matchedTemplate != nil }
+    public var isWeakMatch : Bool { Templates.match(self) != nil }
     
     @discardableResult public func matches() -> Bool {
         if let m = Templates.match(self), self[m.rx] != nil, self[m.tx] != nil {
@@ -65,23 +66,39 @@ public class BTService : Sequence {
         else { self.matchedTemplate = nil }
         return self.matchedTemplate != nil
     }
-    public var isMatched : Bool { matchedTemplate != nil }
+    
+    // callbacks
+    
+    
+    public func discoveredCharacteristics() {
+        self.characteristics.removeAll()
+        service.characteristics?.forEach { c in
+            let characteristic=BTCharacteristic(c)
+            self.characteristics[characteristic.identifier]=characteristic
+        }
+        matched = matches()
+        readAll()
+        //delegate?.discoveredCharacteristics()
+        
+        let c=service.characteristics ?? []
+        if c.count>0 {
+            SysLog.debug(">> PERIPHERAL \(self.peripheral.identifier) - \(self.peripheral.localName ?? "-")")
+            SysLog.debug(">>>> Service \(self.identifier) has \(c.count) characteristics")
+        }
+    }
+    
+    public func updatedCharacteristic(_ characteristic: BTCharacteristic) {
+        guard let v=characteristic.bytes else { return }
+        SysLog.debug(">>>> Characteristic \(characteristic.identifier) on \(identifier) has discovered value")
+        SysLog.debug(characteristic)
+        delegate?.receivedValue(v, onService: identifier, characteristic: characteristic.identifier)
+    }
+    
+   
     
   
     
-    public func read(_ uuid : CBUUID) {
-        self[uuid]?.read()
-    }
-    
-    
-    public func discoverCharacteristics() {
-        self.peripheral.device.discoverCharacteristics(nil, for: self.service)
-    }
-    
-    
-    
-    public subscript(_ uuid: CBUUID) -> BTCharacteristic? { return self.characteristics[uuid] }
-    public subscript(_ c: CBCharacteristic) -> BTCharacteristic? { return self.characteristics[c.uuid] }
+
     
 }
 

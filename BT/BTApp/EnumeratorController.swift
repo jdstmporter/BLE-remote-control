@@ -62,6 +62,8 @@ fileprivate enum ScanForChoice : CaseIterable {
 
 
 class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, UserDataListener, PeripheralRowViewDelegate {
+    
+    
     public static let id = NSUserInterfaceItemIdentifier(rawValue: "__Enumerator_row")
  
     private var scanning : ScanForChoice {
@@ -74,7 +76,6 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
     @IBOutlet weak var systemStatus: OnOffView!
     @IBOutlet weak var table: NSTableView!
     @IBOutlet weak var scanButton: NSButton!
-    private var bt = BTSystemManager()
     private var devs = OrderedDictionary<UUID,BTPeripheral>()
     private var favourites : [UUID] = []
     private var status : Status = .Disabled {
@@ -112,7 +113,7 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
     }
     
     override func viewDidLoad() {
-        bt.delegate=self
+        BTCentral.shared.delegate=self
         guard let nib = NSNib(nibNamed: NSNib.Name("PeripheralRow"),bundle: nil) else { return }
         table.register(nib, forIdentifier: EnumeratorController.id)
         
@@ -147,9 +148,9 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
     @IBAction func scanAction(_ sender: NSButton) {
         switch sender.state {
         case .on:
-            bt.startScan()
+            BTCentral.shared.scan()
         case .off:
-            bt.stopScan()
+            BTCentral.shared.stopScan()
         default:
             break
         }
@@ -178,7 +179,7 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
     }
     
     func create(peripheral: BTPeripheral) {
-        guard bt.scanning else { return }
+        guard BTCentral.shared.scanning else { return }
         SysLog.info("**** Adding \(peripheral)")
         
         devs[peripheral.identifier]=peripheral
@@ -186,14 +187,14 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
     }
     
     func remove(peripheral: BTPeripheral) {
-        guard bt.scanning else { return }
+        guard BTCentral.shared.scanning else { return }
         SysLog.info("**** Removing \(peripheral)")
         devs.removeValue(forKey: peripheral.identifier)
         DispatchQueue.main.async { self.table.reloadData() } // changeFlag.set()
     }
     
     func update(peripheral: BTPeripheral) {
-        guard bt.scanning else { return }
+        guard BTCentral.shared.scanning else { return }
         SysLog.info("**** Changing \(peripheral)")
         DispatchQueue.main.async { self.table.reloadData() } // changeFlag.set()
     }
@@ -204,8 +205,11 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
         }
         else {
             status.remove(.BTEnabled)
-            bt.stopScan()
+            BTCentral.shared.stopScan()
         }
+    }
+    
+    func receivedValue(_: Data, onService: CBUUID, characteristic: CBUUID) {
     }
 }
 
