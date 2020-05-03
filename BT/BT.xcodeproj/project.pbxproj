@@ -45,6 +45,7 @@
 		E1DB8855245985D900F282BF /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1DB8854245985D900F282BF /* CoreData.framework */; };
 		E1DB8860245CBCF100F282BF /* templates.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB885F245CBCF100F282BF /* templates.swift */; };
 		E1DB8862245CDE5E00F282BF /* atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB8861245CDE5E00F282BF /* atomic.swift */; };
+		E1DB8864245F3F3A00F282BF /* model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB8863245F3F3A00F282BF /* model.swift */; };
 		E1E2F6DF23ECB3A900DF4E20 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6DE23ECB3A900DF4E20 /* main.swift */; };
 		E1E2F6E723ECB3C400DF4E20 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */; };
 		E1E2F6EA23ECB3EC00DF4E20 /* central.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2F6E923ECB3EC00DF4E20 /* central.swift */; };
@@ -103,6 +104,7 @@
 		E1DB8854245985D900F282BF /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		E1DB885F245CBCF100F282BF /* templates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = templates.swift; sourceTree = "<group>"; };
 		E1DB8861245CDE5E00F282BF /* atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = atomic.swift; sourceTree = "<group>"; };
+		E1DB8863245F3F3A00F282BF /* model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = model.swift; sourceTree = "<group>"; };
 		E1E2F6DB23ECB3A900DF4E20 /* BT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BT; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1E2F6DE23ECB3A900DF4E20 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E1E2F6E623ECB3C400DF4E20 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -172,6 +174,7 @@
 		E164552623F372A500ADAAA6 /* delegates */ = {
 			isa = PBXGroup;
 			children = (
+				E1DB8863245F3F3A00F282BF /* model.swift */,
 			);
 			path = delegates;
 			sourceTree = "<group>";
@@ -424,6 +427,7 @@
 				E164553623F7466C00ADAAA6 /* message.swift in Sources */,
 				E164551B23F0BA1300ADAAA6 /* delegates.swift in Sources */,
 				E1DB884F2457829E00F282BF /* template.swift in Sources */,
+				E1DB8864245F3F3A00F282BF /* model.swift in Sources */,
 				E1E2F6EA23ECB3EC00DF4E20 /* central.swift in Sources */,
 				E164550C23EDCD3B00ADAAA6 /* peripheral.swift in Sources */,
 				E11E7D7C23F8CE7200EF12BA /* target.swift in Sources */,

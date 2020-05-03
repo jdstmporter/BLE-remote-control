@@ -30,6 +30,8 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     private var services : [CBUUID:BTService]
     public private(set) var uuids : [CBUUID]
     private var ads : [String:Any]
+    public private(set) var isConnected : Bool = false
+    private var timeout : Timer?
     
     //public private(set) var matchedTemplate : BLESerialTemplate?
     
@@ -48,9 +50,16 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     public var connected : Bool { return state == .connected }
     
     
+    
     public func connect() {
-        if state == .disconnected {
+        if state == .disconnected && !isConnected {
             BTCentral.shared.connect(self)
+            guard timeout == nil else { return }
+            timeout = Timer.scheduledTimer(withTimeInterval: delegate?.timeoutValue ?? 10.0, repeats: false) { _ in
+                SysLog.info("Timeout on \(self)")
+                if !self.isConnected { self.hasDisconnected() }
+                self.timeout=nil
+            }
         }
     }
     
@@ -101,18 +110,22 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     
     
     public func hasConnected() {
-        guard state == .connected else { return }
+        guard isConnected == false else { return }
+        self.timeout?.invalidate()
+        self.timeout=nil
         SysLog.info("\(device.identifier) connected")
         tellAllCharacteristics(action: { $0.delegate?.didConnect() } )
-        delegate?.create(peripheral: self)
+        isConnected=true
+        delegate?.update(peripheral: self)
         self.scan()
     }
     
     public func hasDisconnected() {
         SysLog.debug("\(device.identifier) disconnected")
         tellAllCharacteristics(action: { $0.delegate?.didDisconnect() } )
+        isConnected=false
         delegate?.remove(peripheral: self)
-        self.connect()
+        //self.connect()
     }
     
     public func hasFailedToConnect() {

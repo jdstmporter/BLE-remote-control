@@ -788,7 +788,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <comboBox horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="236-WB-y6m">
-                                    <rect key="frame" x="222" y="2" width="429" height="25"/>
+                                    <rect key="frame" x="222" y="2" width="247" height="25"/>
                                     <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="left" drawsBackground="YES" completes="NO" numberOfVisibleItems="2" id="ipz-Pq-71w">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -821,10 +821,35 @@
                                     </constraints>
                                     <imageCell key="cell" controlSize="mini" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSStatusUnavailable" id="FfM-G3-xVI"/>
                                 </imageView>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1N1-ms-mhl">
+                                    <rect key="frame" x="480" y="7" width="74" height="16"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="Timeout (s)" id="At8-Cu-glE">
+                                        <font key="font" usesAppearanceFont="YES"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FaC-cX-Xt9">
+                                    <rect key="frame" x="556" y="5" width="100" height="21"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="100" id="Ci8-H3-nfu"/>
+                                    </constraints>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="Eqh-Xg-mVF">
+                                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##1" numberStyle="decimal" allowsFloats="NO" usesGroupingSeparator="NO" formatWidth="-1" roundingMode="floor" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="3" id="vWm-Le-flt">
+                                            <integer key="multiplier" value="1"/>
+                                            <integer key="roundingIncrement" value="1"/>
+                                            <real key="minimum" value="0.0"/>
+                                            <real key="maximum" value="100"/>
+                                        </numberFormatter>
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
                             </subviews>
                             <constraints>
                                 <constraint firstItem="236-WB-y6m" firstAttribute="leading" secondItem="5LP-fw-yYg" secondAttribute="trailing" constant="4" id="2CY-71-ata"/>
-                                <constraint firstItem="yqn-Ma-4bR" firstAttribute="leading" secondItem="236-WB-y6m" secondAttribute="trailing" constant="16" id="4qu-PP-qAm"/>
+                                <constraint firstItem="yqn-Ma-4bR" firstAttribute="leading" secondItem="FaC-cX-Xt9" secondAttribute="trailing" constant="8" id="2Iz-8P-bAh"/>
                                 <constraint firstItem="HM8-wR-Ecv" firstAttribute="centerY" secondItem="Uqc-ta-Zgt" secondAttribute="centerY" id="8Y4-kR-Rbs"/>
                                 <constraint firstItem="5LP-fw-yYg" firstAttribute="leading" secondItem="eA4-YW-e1t" secondAttribute="trailing" constant="16" id="K7e-vX-Wao"/>
                                 <constraint firstAttribute="trailing" secondItem="yqn-Ma-4bR" secondAttribute="trailing" constant="2" id="LNn-kq-kN3"/>
@@ -833,8 +858,12 @@
                                 <constraint firstItem="HM8-wR-Ecv" firstAttribute="leading" secondItem="Uqc-ta-Zgt" secondAttribute="leading" constant="2" id="VXt-lm-7Tq"/>
                                 <constraint firstItem="eA4-YW-e1t" firstAttribute="leading" secondItem="HM8-wR-Ecv" secondAttribute="trailing" constant="2" id="e0m-oy-LT1"/>
                                 <constraint firstAttribute="bottom" secondItem="yqn-Ma-4bR" secondAttribute="bottom" constant="4" id="e6d-dH-xNJ"/>
+                                <constraint firstItem="FaC-cX-Xt9" firstAttribute="centerY" secondItem="Uqc-ta-Zgt" secondAttribute="centerY" id="fj3-az-rR0"/>
+                                <constraint firstItem="FaC-cX-Xt9" firstAttribute="leading" secondItem="1N1-ms-mhl" secondAttribute="trailing" constant="4" id="hdW-uU-kUg"/>
                                 <constraint firstItem="5LP-fw-yYg" firstAttribute="centerY" secondItem="Uqc-ta-Zgt" secondAttribute="centerY" id="idS-hb-THF"/>
+                                <constraint firstItem="1N1-ms-mhl" firstAttribute="leading" secondItem="236-WB-y6m" secondAttribute="trailing" constant="16" id="pze-HX-VoQ"/>
                                 <constraint firstItem="236-WB-y6m" firstAttribute="centerY" secondItem="Uqc-ta-Zgt" secondAttribute="centerY" id="qsZ-7v-LaS"/>
+                                <constraint firstItem="1N1-ms-mhl" firstAttribute="centerY" secondItem="Uqc-ta-Zgt" secondAttribute="centerY" id="sb7-Yv-Jh7"/>
                             </constraints>
                         </view>
                         <constraints>
@@ -866,6 +895,7 @@
                 <outlet property="scanFor" destination="236-WB-y6m" id="XLL-LO-Xwd"/>
                 <outlet property="systemStatus" destination="eA4-YW-e1t" id="e3E-bf-JHI"/>
                 <outlet property="table" destination="w7e-ni-kx5" id="4Fv-BT-w1U"/>
+                <outlet property="timeout" destination="FaC-cX-Xt9" id="Cid-EP-gCJ"/>
                 <outlet property="view" destination="EiT-Mj-1SZ" id="53u-1n-eYT"/>
             </connections>
         </viewController>

@@ -36,7 +36,7 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
     public private(set) var state : CBManagerState
     public var alive : Bool { return state == .poweredOn }
     private var ble : BLE = .Unknown
-    private var peripherals : OrderedDictionary<UUID,BTPeripheral>
+    public private(set) var peripherals : OrderedDictionary<UUID,BTPeripheral>
     
     public override init() {
         state = .unknown
@@ -54,6 +54,7 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
     public subscript(_ p : CBPeripheral) -> BTPeripheral? { return self.peripherals[p.identifier] }
     public var count : Int { return peripherals.count }
     public func makeIterator() -> Iterator { self.peripherals.values.makeIterator() }
+    public func contains(_ id : UUID) -> Bool { peripherals[id] != nil }
    
     public var scanning : Bool { self.central.isScanning }
     public func scan(services : [CBUUID]? = nil) {
@@ -122,7 +123,6 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         if let p=self[peripheral] {
             p.hasConnected()
-            //p.scan()
         }
     }
     
@@ -149,14 +149,14 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
                 let p=BTPeripheral(peripheral,advertisementData: ads, rssi: Double(truncating: RSSI))
                 p.delegate=self.delegate
                 self[p.identifier]=p
-                if new { p.connect() }
-                //self.delegate?.discovered(device: p, new: new)
+                if new {
+                    guard let pp = self[p.identifier] else { return }
+                        self.delegate?.create(peripheral: pp)
+                        SysLog.info("Connecting \(pp)")
+                        pp.connect()
+                }
             }
-            
-                
-                   // central.connect(peripheral, options: nil)
-                
-            
+
         }
     }
     

@@ -39,6 +39,7 @@ public protocol BTPeripheralManagerDelegate {
     
     func systemStateChanged(alive: Bool)
     func receivedValue(_ : Data,onService: CBUUID, characteristic: CBUUID)
+    var timeoutValue : Double { get }
 }
 
 public protocol BTCentralDelegate {

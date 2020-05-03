@@ -258,6 +258,9 @@
                         <constraint firstAttribute="width" constant="64" id="dWw-ub-3Yj"/>
                     </constraints>
                 </box>
+                <progressIndicator wantsLayer="YES" maxValue="100" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="K1f-BE-qDN">
+                    <rect key="frame" x="224" y="64" width="32" height="32"/>
+                </progressIndicator>
             </subviews>
             <constraints>
                 <constraint firstItem="JiR-ef-9DG" firstAttribute="leading" secondItem="HSJ-tU-IEl" secondAttribute="trailing" constant="4" id="28q-W2-yvb"/>
@@ -265,9 +268,11 @@
                 <constraint firstAttribute="bottom" secondItem="JiR-ef-9DG" secondAttribute="bottom" constant="4" id="9T7-GS-Za3"/>
                 <constraint firstItem="bzD-we-OJ3" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="4" id="BrC-Cd-XMR"/>
                 <constraint firstAttribute="trailing" secondItem="JiR-ef-9DG" secondAttribute="trailing" constant="4" id="FkW-5d-n5X"/>
+                <constraint firstItem="K1f-BE-qDN" firstAttribute="centerY" secondItem="c22-O7-iKe" secondAttribute="centerY" id="Pc4-Ew-rpW"/>
                 <constraint firstItem="DAI-qM-jTZ" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="4" id="TYg-dJ-V59"/>
                 <constraint firstItem="HSJ-tU-IEl" firstAttribute="top" secondItem="DAI-qM-jTZ" secondAttribute="bottom" constant="4" id="XtE-YL-CW5"/>
                 <constraint firstItem="bzD-we-OJ3" firstAttribute="leading" secondItem="DAI-qM-jTZ" secondAttribute="trailing" constant="4" id="chV-za-5Di"/>
+                <constraint firstItem="K1f-BE-qDN" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" id="gNT-vV-raM"/>
                 <constraint firstItem="bzD-we-OJ3" firstAttribute="height" secondItem="DAI-qM-jTZ" secondAttribute="height" id="gZn-gE-CHQ"/>
                 <constraint firstItem="DAI-qM-jTZ" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="4" id="qS8-OD-s6E"/>
                 <constraint firstAttribute="trailing" secondItem="bzD-we-OJ3" secondAttribute="trailing" constant="4" id="ts4-We-Xdw"/>
@@ -278,6 +283,7 @@
                 <outlet property="name" destination="VNf-TB-GyN" id="l4m-cI-emA"/>
                 <outlet property="rssi" destination="ZQm-kU-TNb" id="PuU-AF-9hU"/>
                 <outlet property="services" destination="3wR-aa-wPh" id="GF0-dn-SmY"/>
+                <outlet property="spinner" destination="K1f-BE-qDN" id="2oA-7U-bQk"/>
                 <outlet property="uuid" destination="vYF-Xe-uBT" id="lBv-iL-yhh"/>
             </connections>
             <point key="canvasLocation" x="140" y="81"/>

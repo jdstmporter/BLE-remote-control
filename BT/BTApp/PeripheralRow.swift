@@ -47,11 +47,13 @@ class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataS
     @IBOutlet weak var rssi: NSTextField!
     @IBOutlet weak var services: NSTableView!
     @IBOutlet weak var favourite: NSButton!
+    @IBOutlet weak var spinner: NSProgressIndicator!
     
     private var matchedServices : [CBUUID] = []
     public var delegate : PeripheralRowViewDelegate? = nil
     public var peripheral : BTPeripheral? = nil { didSet { self.touch() } }
     public var isFavourite : Bool { favourite?.state == .on }
+    
     
     
     public func touch(isFavourite : Bool = false) {
@@ -63,6 +65,15 @@ class PeripheralRowView : NSTableCellView, NSTableViewDelegate, NSTableViewDataS
             self.rssi?.doubleValue = p.rssi
             self.favourite?.state = NSControl.StateValue(isFavourite)
             self.services.reloadData()
+            
+            if p.isConnected {
+                self.spinner.stopAnimation(nil)
+                self.spinner.isHidden=true
+            }
+            else {
+                self.spinner.isHidden=false
+                self.spinner.startAnimation(nil)
+            }
         }
     }
     

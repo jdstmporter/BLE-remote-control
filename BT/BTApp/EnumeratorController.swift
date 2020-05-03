@@ -76,7 +76,8 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
     @IBOutlet weak var systemStatus: OnOffView!
     @IBOutlet weak var table: NSTableView!
     @IBOutlet weak var scanButton: NSButton!
-    private var devs = OrderedDictionary<UUID,BTPeripheral>()
+    @IBOutlet weak var timeout: NSTextField!
+    
     private var favourites : [UUID] = []
     private var status : Status = .Disabled {
         didSet {
@@ -90,11 +91,13 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
             }
         }
     }
+    
     private var timer : Timer?
     private var changeFlag = AtomicFlag()
     private var templates : [BLESerialTemplate] = []
     public var width : CGFloat { table.bounds.width }
     public func isFavourite(device : UUID) -> Bool { self.favourites.contains(device) }
+    public private(set) var peripherals = OrderedDictionary<UUID,BTPeripheral>()
     
     
     
@@ -118,13 +121,11 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
         table.register(nib, forIdentifier: EnumeratorController.id)
         
         scanning = .All
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { t in
-            if self.changeFlag.testAndClear() {
-                DispatchQueue.main.async { self.table.reloadData() }
-            }
-        }
+        timeout.doubleValue=10.0
         
     }
+    
+    public var timeoutValue : Double { timeout?.doubleValue ?? 10.0 }
     
     override func viewDidDisappear() {
         timer?.invalidate()
@@ -167,8 +168,8 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
         // for its favourite status is a change from what is currently
         // true (designed to avoid infinite recursion by pushing back
         // to cloud when nothing has changed)
-        SysLog.info("Contains: \(devs.contains { $0.key == device }) ALREADY: \(favourites.contains(device)) NEW: \(value)")
-        guard (devs.contains { $0.key == device }),
+        SysLog.info("Contains: \(peripherals.contains(device)) ALREADY: \(favourites.contains(device)) NEW: \(value)")
+        guard peripherals.contains(device),
             favourites.contains(device) != value
             else { return }
         
@@ -182,14 +183,14 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
         guard BTCentral.shared.scanning else { return }
         SysLog.info("**** Adding \(peripheral)")
         
-        devs[peripheral.identifier]=peripheral
+        peripherals[peripheral.identifier]=peripheral
         DispatchQueue.main.async { self.table.reloadData() } // changeFlag.set()
     }
     
     func remove(peripheral: BTPeripheral) {
         guard BTCentral.shared.scanning else { return }
         SysLog.info("**** Removing \(peripheral)")
-        devs.removeValue(forKey: peripheral.identifier)
+        peripherals.removeValue(forKey: peripheral.identifier)
         DispatchQueue.main.async { self.table.reloadData() } // changeFlag.set()
     }
     
@@ -217,11 +218,10 @@ extension EnumeratorController : NSTableViewDelegate, NSTableViewDataSource {
     
     // NSTableViewDataSource
     
-    func numberOfRows(in tableView: NSTableView) -> Int { devs.count }
+    func numberOfRows(in tableView: NSTableView) -> Int { peripherals.count }
     func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
-        guard 0 <= row, row < devs.count else { return nil }
-        return devs.at(row)
-        
+        guard 0 <= row, row < peripherals.count else { return nil }
+        return peripherals.at(row)
     }
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         guard let dev = self.tableView(table,objectValueFor: nil,row: row) as? BTPeripheral else { return nil }
