@@ -32,7 +32,7 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
     
     //private var semaphore : DispatchSemaphore? = nil
     private var central : CBCentralManager!
-    public var delegate : BTCentralDelegate?
+    public var delegate : BTSystemManager?
     public private(set) var state : CBManagerState
     public var alive : Bool { return state == .poweredOn }
     private var ble : BLE = .Unknown
@@ -57,14 +57,16 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
    
     public func scan(services : [CBUUID]? = nil) {
         SysLog.info("******** trying to scan with \(services?.description ?? "nil")")
-        if(!central.isScanning) {
-            central.scanForPeripherals(withServices: services, options: nil)
-        }
+            if(!self.central.isScanning) {
+                self.central.scanForPeripherals(withServices: services, options: nil)
+            }
+        
     }
     public func stopScan() {
-        if central.isScanning {
-            central.stopScan()
-        }
+            if self.central.isScanning {
+                self.central.stopScan()
+            }
+        
     }
     public func connect(_ d : BTPeripheral) {
         central.connect(d.device, options: nil)
@@ -111,6 +113,7 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
             SysLog.error("Error state \(central.state)")
             
         }
+        SysLog.info("Central manager has changed state: \(state)")
         delegate?.changedState()
     }
     
@@ -133,6 +136,8 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
         }
     }
     
+    private static let queue = DispatchQueue(label: "BTEnumerateQueue", qos: .background)
+    
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData ads: [String : Any], rssi RSSI: NSNumber) {
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(milliseconds: 100))  {
@@ -141,7 +146,7 @@ public class BTCentral : NSObject, CBCentralManagerDelegate, Sequence {
             if new {
                 let p=BTPeripheral(peripheral,advertisementData: ads, rssi: Double(truncating: RSSI))
                 self[p.identifier]=p
-                self.delegate?.discovered(device: self[identifier]!, new: new)
+                self.delegate?.discovered(device: self[identifier]!,new : new)
             }
             
                 

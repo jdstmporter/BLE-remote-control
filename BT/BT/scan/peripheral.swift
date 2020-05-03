@@ -23,7 +23,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         case Services
     }
     
-    public var delegate : BTPeripheralDelegate? 
+    public var delegate : BTPeripheralManager?
     public private(set) var identifier : UUID
     public private(set) var rssi : Double
     public private(set) var device : CBPeripheral
@@ -54,10 +54,13 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         }
     }
     
+    
+    
     public func hasAdUUID(_ uuid : CBUUID) -> Bool { return uuids.contains(uuid) }
     public func hasServiceUUID(_ uuid : CBUUID) -> Bool { return services[uuid] != nil }
     
     public func scan(services : [CBUUID]? = nil) {
+        self.matched=services
         device.discoverServices(services)
     }
     
@@ -65,7 +68,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
     public var matchedServices : [BTService] { services.values.filter { $0.isMatched } }
     public var matchedUUIDs : [CBUUID] { matchedServices.map { $0.identifier } }
     public var isMatched : Bool { matchedServices.count > 0 }
-    
+    private var matched : [CBUUID]? = nil
     
     private func servicesFound() {
         let s = device.services ?? []
@@ -73,7 +76,9 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
             let bts = BTService(service, peripheral: self)
             self.services[bts.identifier]=bts
         }
+
         delegate?.discoveredServices()
+        
     }
     
     public func makeIterator() -> Array<BTPeripheral.Element>.Iterator {
@@ -106,6 +111,7 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         }
         rssi=RSSI.doubleValue
         SysLog.debug("Peripheral \(identifier) : RSSI: \(rssi)")
+        //delegate?.readRSSI(rssi: rssi)
         delegate?.readRSSI(rssi: rssi)
     }
 
@@ -128,7 +134,6 @@ public class BTPeripheral : NSObject, CBPeripheralDelegate, Sequence, Comparable
         device.discoverServices(nil)
     }
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Error?) {
-        delegate?.discoveredIncludedServices()
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {

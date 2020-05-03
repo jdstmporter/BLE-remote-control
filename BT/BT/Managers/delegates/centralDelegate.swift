@@ -54,11 +54,16 @@ public class BTSystemManager : BTBasicDelegate, BTCentralDelegate, BTSystemManag
     public func discovered(device: BTPeripheral, new: Bool) {
         SysLog.info("Discovered peripheral (is new: \(new)):")
         SysLog.info(device.description)
+        
         if new {
-            let mgr = BTPeripheralManager(device,services)
-            mgr.delegate=delegate
-            mgr.run()
-            managers.append(mgr)
+            let mgr = BTPeripheralManager(device,self.services)
+            mgr.delegate=self.delegate
+            self.managers.append(mgr)
+            BTSystemManager.queue.async {
+                
+                mgr.run()
+                
+            }
         }
         
         
@@ -71,6 +76,8 @@ public class BTSystemManager : BTBasicDelegate, BTCentralDelegate, BTSystemManag
         //    BTCentral.shared.scan(services: services)
         //}
     }
+    
+    
     
     
 }

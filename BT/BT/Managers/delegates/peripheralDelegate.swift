@@ -129,7 +129,8 @@ public class BTPeripheralManager : BTBasicDelegate, BTPeripheralDelegate {
         state = .Ready
         SysLog.debug("\(device.identifier) has discovered services matching \(match?.description ?? "<ALL>")")
         delegate?.update(peripheral: device)
-        self.managers = self.services.map { service in
+        self.managers = self.services.filter { $0.weakMatch() }.map { service in
+            SysLog.info("\(self) : weak match for \(service)")
             let manager = BTServiceManager(service)
             manager.delegate=delegate
             manager.run()
@@ -138,9 +139,7 @@ public class BTPeripheralManager : BTBasicDelegate, BTPeripheralDelegate {
         
     }
     
-    public func matchedServices() {
-        
-    }
+    
     
     public func discoveredIncludedServices() {
         

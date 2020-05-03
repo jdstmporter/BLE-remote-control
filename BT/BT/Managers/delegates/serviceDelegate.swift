@@ -36,8 +36,17 @@ public class BTServiceManager : BTBasicDelegate, BTServiceDelegate {
     }
     private var service : BTService
     public private(set) var state : State
-    private var matched : Bool? = nil
+    
     public var delegate : BTPeripheralManagerDelegate?
+    
+    private var matched : Bool? = nil {
+        didSet {
+            if matched != oldValue {
+                SysLog.debug("Have configured service \(service)")
+                delegate?.update(peripheral: service.peripheral)
+            }
+        }
+    }
     
     public init(_ service: BTService) {
         self.service=service
@@ -61,25 +70,12 @@ public class BTServiceManager : BTBasicDelegate, BTServiceDelegate {
     
     public var uuids : [CBUUID] { service.uuids }
     
- 
-    
-    public func matched(template : BLESerialTemplate) -> Bool {
-        guard state == .Ready else { return false }
-        return self.service.identifier==template.service &&
-            self.uuids.contains(template.rx) &&
-            self.uuids.contains(template.tx)
-    }
     
     public func discoveredCharacteristics() {
         state = .Ready
         let notification=Notification(name: BTServiceManager.BTServiceDiscoveredEvent, object: nil, userInfo: ["service": service])
         NotificationCenter.default.post(notification)
-        let newM = service.matches()
-        if newM != matched {
-            SysLog.debug("Have configured service \(service)")
-            delegate?.update(peripheral: service.peripheral)
-        }
-        matched=newM
+        matched = service.matches()
         run()
     }
     

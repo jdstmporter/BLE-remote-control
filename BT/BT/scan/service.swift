@@ -54,6 +54,10 @@ public class BTService : Sequence {
         }
     }
     
+    public func weakMatch() -> Bool {
+        Templates.match(self) != nil
+    }
+    
     @discardableResult public func matches() -> Bool {
         if let m = Templates.match(self), self[m.rx] != nil, self[m.tx] != nil {
             self.matchedTemplate = m

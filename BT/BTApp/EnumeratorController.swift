@@ -89,9 +89,12 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
             }
         }
     }
+    private var timer : Timer?
+    private var changeFlag = AtomicFlag()
     private var templates : [BLESerialTemplate] = []
     public var width : CGFloat { table.bounds.width }
     public func isFavourite(device : UUID) -> Bool { self.favourites.contains(device) }
+    
     
     
     public var id = UUID()
@@ -114,7 +117,16 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
         table.register(nib, forIdentifier: EnumeratorController.id)
         
         scanning = .All
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { t in
+            if self.changeFlag.testAndClear() {
+                DispatchQueue.main.async { self.table.reloadData() }
+            }
+        }
         
+    }
+    
+    override func viewDidDisappear() {
+        timer?.invalidate()
     }
     
     public func readyToScan() {
@@ -170,19 +182,20 @@ class EnumeratorController : NSViewController, BTPeripheralManagerDelegate, User
         SysLog.info("**** Adding \(peripheral)")
         
         devs[peripheral.identifier]=peripheral
-        
-        DispatchQueue.main.async { self.table.reloadData() }
+        DispatchQueue.main.async { self.table.reloadData() } // changeFlag.set()
     }
     
     func remove(peripheral: BTPeripheral) {
         guard bt.scanning else { return }
+        SysLog.info("**** Removing \(peripheral)")
         devs.removeValue(forKey: peripheral.identifier)
-        DispatchQueue.main.async { self.table.reloadData() }
+        DispatchQueue.main.async { self.table.reloadData() } // changeFlag.set()
     }
     
     func update(peripheral: BTPeripheral) {
         guard bt.scanning else { return }
-        DispatchQueue.main.async { self.table.reloadData() }
+        SysLog.info("**** Changing \(peripheral)")
+        DispatchQueue.main.async { self.table.reloadData() } // changeFlag.set()
     }
     
     func systemStateChanged(alive: Bool) {
